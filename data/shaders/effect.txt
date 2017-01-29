@@ -1,0 +1,245 @@
+cbuffer cbMatrix
+{
+	float4x4 ViewProj;
+	float4x4 World;
+	float4x4 WorldN;
+	float4x4 TextureM;
+};
+
+Texture2D tex : register(t0);
+
+SamplerState TextureSampler
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
+struct VertexIn
+{
+	float3 Pos : POSITION;
+	float2 TCoord : TCOORD;
+	float3 normal : NORMAL;
+};
+
+struct VertexOut
+{
+	float3 PosL : POSITION;
+	float2 TCoord : TCOORD;
+	float3 normal : NORMAL;
+};
+
+struct QuadVertexIn
+{
+	float3 Pos : POSITION;
+	float2 TCoord : TCOORD;
+};
+
+struct QuadVertexOut
+{
+	float4 PosH : SV_POSITION;
+	float2 TCoord : TCOORD;
+};
+
+struct GeometryOut
+{
+	float4 PosH : SV_POSITION;
+	float2 TCoord : TCOORD;
+	float3 normal : NORMAL;
+	uint color : SV_PrimitiveID;
+};
+
+VertexOut VS(VertexIn vin)
+{
+	VertexOut vout;
+
+	vout.PosL = vin.Pos;
+	vout.TCoord = vin.TCoord;
+	vout.normal = vin.normal;
+
+	return vout;
+	/*
+	float4x4 mvp = mul(World, ViewProj);
+	GeometryOut outpoint;
+
+	outpoint.PosH   = mul(float4(vin.Pos, 1.0f), mvp);
+	outpoint.TCoord = mul(float4(vin.TCoord, 0.0, 1.0f), TextureM).xy;
+	outpoint.normal = mul(float4(vin.normal, 0.0f), WorldN).xyz;
+	return outpoint;
+	*/
+}
+
+[maxvertexcount(3)]
+void GS(triangle VertexOut vertIn[3], uint primitive : SV_PrimitiveID, inout TriangleStream<GeometryOut> triStream)
+{
+	float4x4 mvp = mul(World, ViewProj);
+
+	GeometryOut outpoint;
+	outpoint.color = primitive % 2;
+	[unroll]
+	for (int i = 0; i < 3; i++)
+	{
+		outpoint.PosH   = mul(float4(vertIn[i].PosL, 1.0f), mvp);
+		outpoint.TCoord = mul(float4(vertIn[i].TCoord, 0.0, 1.0f), TextureM).xy;
+		outpoint.normal = mul(float4(vertIn[i].normal, 0.0f), WorldN).xyz;
+
+		triStream.Append(outpoint);
+	}
+}
+
+float4 PS(GeometryOut pin) : SV_Target
+{
+	float3 n = normalize(pin.normal);
+
+	if (pin.color)
+	{
+		return tex.Sample(TextureSampler, pin.TCoord) * max( 0.0, dot(-n, float3(-0.5,-0.5,0.5))) + float4(0.08, 0.08, 0.08, 0);
+	}
+	else
+	{
+		return float4(0.3, 0.0, 0.0, 1.0);
+	}
+}
+
+QuadVertexOut QuadVS(QuadVertexIn vin)
+{
+	QuadVertexOut vout;
+
+	vout.PosH = float4(vin.Pos, 1.0);
+	vout.TCoord = vin.TCoord;
+
+	return vout;
+}
+
+float4 QuadPS(QuadVertexOut pin) : SV_Target
+{
+	return tex.Sample(TextureSampler, pin.TCoord);
+}
+
+QuadVertexOut NextGenVS(QuadVertexIn vin)
+{
+	QuadVertexOut vout;
+
+	vout.PosH = float4(vin.Pos, 1.0);
+	vout.TCoord = vin.TCoord;
+
+	return vout;
+}
+
+float4 NextGenPS(QuadVertexOut pin) : SV_Target
+{
+	float4 color = tex.Sample(TextureSampler, pin.TCoord);
+
+	float4 nLeft = tex.Sample(TextureSampler, pin.TCoord - float2(8.0 / 800.0, 0.0));
+	float4 nRight = tex.Sample(TextureSampler, pin.TCoord + float2(8.0 / 800.0, 0.0));
+	float4 nTop = tex.Sample(TextureSampler, pin.TCoord + float2(0.0, 6.0 / 600.0));
+	float4 nBott = tex.Sample(TextureSampler, pin.TCoord - float2(0.0, 6.0 / 600.0));
+
+	float4 nLeftTop = tex.Sample(TextureSampler, pin.TCoord + float2(-8.0 / 800.0, 6.0 / 600.0));
+	float4 nRightTop = tex.Sample(TextureSampler, pin.TCoord + float2(8.0 / 800.0, 6.0 / 600.0));
+	float4 nLeftBott = tex.Sample(TextureSampler, pin.TCoord + float2(-8.0 / 800.0, -6.0 / 600.0));
+	float4 nRightBott = tex.Sample(TextureSampler, pin.TCoord + float2(8.0 / 800.0, -6.0 / 600.0));
+
+	int count = 0;
+
+	if (nLeft.g > 0.8)
+	{
+		count += 1;
+	}
+
+	if (nRight.g > 0.8)
+	{
+		count += 1;
+	}
+
+	if (nTop.g > 0.8)
+	{
+		count += 1;
+	}
+
+	if (nBott.g > 0.8)
+	{
+		count += 1;
+	}
+
+	if (nLeftTop.g > 0.8)
+	{
+		count += 1;
+	}
+
+	if (nRightTop.g > 0.8)
+	{
+		count += 1;
+	}
+
+	if (nLeftBott.g > 0.8)
+	{
+		count += 1;
+	}
+
+	if (nRightBott.g > 0.8)
+	{
+		count += 1;
+	}
+
+	if (color.g > 0.8)
+	{
+		if (count == 3 || count == 2)
+		{
+			return float4(0.0, 1.0, 0.0, 1.0);
+		}
+		else
+		{
+			return float4(0.0, 0.0, 0.0, 1.0);
+		}
+	}
+	else
+	{
+		if (count == 3)
+		{
+			return float4(0.0, 1.0, 0.0, 1.0);
+		}
+		else
+		{
+			return float4(0.0, 0.0, 0.0, 1.0);
+		}
+	}
+}
+
+RasterizerState TwoSide
+{
+	CullMode = None;
+};
+
+technique11 ColorTech
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, VS() ) );
+		SetGeometryShader(CompileShader(gs_5_0, GS()));
+		SetPixelShader( CompileShader( ps_5_0, PS() ) );
+
+		SetRasterizerState(TwoSide);
+	}
+}
+
+technique11 QuadTech
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, QuadVS() ) );
+		SetGeometryShader(0);
+		SetPixelShader( CompileShader( ps_5_0, QuadPS() ) );
+
+	}
+}
+
+technique11 NextGen
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, NextGenVS() ) );
+		SetPixelShader( CompileShader( ps_5_0, NextGenPS() ) );
+
+	}
+}
