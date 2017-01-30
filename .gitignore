@@ -2,3 +2,4 @@ out/
 intermediate/
 RT.VC.*
 .vs/
+.cov/
