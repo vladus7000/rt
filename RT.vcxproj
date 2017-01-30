@@ -22,6 +22,7 @@
     <ClCompile Include="code\3paty\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="code\game\src\main.cpp" />
     <ClCompile Include="code\game\src\TeapotObject.cpp" />
+    <ClCompile Include="code\rt\src\render\Camera.cpp" />
     <ClCompile Include="code\rt\src\render\Renderable.cpp" />
     <ClCompile Include="code\rt\src\render\Renderer.cpp" />
     <ClCompile Include="code\rt\src\system\FileManager.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="code\3paty\tinyxml2\tinyxml2.h" />
     <ClInclude Include="code\game\inc\teapot.h" />
     <ClInclude Include="code\game\inc\TeapotObject.hpp" />
+    <ClInclude Include="code\rt\inc\render\Camera.hpp" />
     <ClInclude Include="code\rt\inc\render\Renderable.hpp" />
     <ClInclude Include="code\rt\inc\render\Renderer.hpp" />
     <ClInclude Include="code\rt\inc\system\FileManager.hpp" />

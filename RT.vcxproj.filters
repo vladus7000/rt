@@ -45,6 +45,9 @@
     <ClCompile Include="code\game\src\TeapotObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="code\rt\src\render\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\3paty\tinyxml2\tinyxml2.h">
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="code\rt\inc\world\World.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="code\rt\inc\render\Camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
