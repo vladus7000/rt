@@ -1,6 +1,9 @@
 #pragma once
+
 #include <d3d11.h>
 #include <xnamath.h>
+#include <vector>
+#include <string>
 
 namespace rt
 {
@@ -27,9 +30,21 @@ namespace rt
 
 			const CoreComponents& getCoreComponents() const { return m_coreComponents; }
 
+			void addChild(Object* child);
+			void removeChild(Object* child);
+
+			void setRoot(Object* root);
+			Object* getRoot() { return m_root; }
+
+			void setName(const std::string& name) { m_name = name; };
+			const std::string& getName() const { return m_name; }
+
 		protected:
 			XMMATRIX m_world;
 			CoreComponents m_coreComponents;
+			std::vector<Object*> m_childs;
+			Object* m_root = nullptr;
+			std::string m_name = "dummy";
 		};
 	}
 }

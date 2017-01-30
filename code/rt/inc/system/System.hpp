@@ -9,6 +9,10 @@ void* operator new[](size_t size);
 
 void operator delete (void* ptr);
 void operator delete[](void* ptr);
+namespace tinyxml2
+{
+	class XMLNode;
+}
 
 namespace rt
 {
@@ -21,6 +25,7 @@ namespace rt
 			unsigned int windowSizeY;
 			std::string windowsName;
 			std::string rootFolder;
+			std::string sceneFile;
 			unsigned int fixedFrameRate;
 
 			HWND hwnd;
@@ -43,6 +48,9 @@ namespace rt
 
 			static void* allocAllignement(size_t size, size_t allign);
 		private:
+			void parseGraphicsSettings(tinyxml2::XMLNode& node);
+			void parseSceneSettings(tinyxml2::XMLNode& node);
+
 			ConfigRef m_config;
 			static bool m_running;
 			friend LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);

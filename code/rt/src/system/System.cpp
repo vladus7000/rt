@@ -39,13 +39,15 @@ namespace
 	static const unsigned int DefaultRefreshRate = 60;
 	static const char* DefaultWindowName = "RenderTest";
 
+	static const char* graphicsElementName = "graphics";
 	static const char* windowElementName = "window";
 	static const char* cameraElementName = "camera";
+	static const char* sceneElementName = "scene";
 
 	static const char* titleAttributetName = "title";
+	static const char* fileNameAttributetName = "file";
 	static const char* widthAttributetName = "width";
 	static const char* heightAttributetName = "height";
-
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -63,7 +65,11 @@ System::System()
 	: m_config(std::make_shared<Config>())
 {
 	fs::FileDescriptor::Ref configFile = fs::FileManager::LoadFileSync(SettingsFile);
-	bool loadConfigFile = false;
+	
+	m_config->windowSizeX = DefaultWidth;
+	m_config->windowSizeY = DefaultHeight;
+	m_config->windowsName = DefaultWindowName;
+	m_config->fixedFrameRate = DefaultRefreshRate;
 
 	if (configFile->valid)
 	{
@@ -72,23 +78,21 @@ System::System()
 
 		if (eResult == tinyxml2::XMLError::XML_SUCCESS)
 		{
-			loadConfigFile = true;
 			if (tinyxml2::XMLNode* root = xmlDoc.RootElement())
 			{
-				tinyxml2::XMLElement* window = root->FirstChildElement(windowElementName);
-				m_config->windowsName = window->Attribute(titleAttributetName);
-				window->QueryUnsignedAttribute(widthAttributetName, &m_config->windowSizeX);
-				window->QueryUnsignedAttribute(heightAttributetName, &m_config->windowSizeY);
+				if (tinyxml2::XMLElement* graphics = root->FirstChildElement(graphicsElementName))
+				{
+					parseGraphicsSettings(*graphics);
+				}
+
+				if (tinyxml2::XMLElement* scene = root->FirstChildElement(sceneElementName))
+				{
+					parseSceneSettings(*scene);
+				}
+
+				m_config->windowsName += std::string(" : ") += m_config->sceneFile;
 			}
 		}
-	}
-
-	if (!loadConfigFile)
-	{
-		m_config->windowSizeX = DefaultWidth;
-		m_config->windowSizeY = DefaultHeight;
-		m_config->windowsName = DefaultWindowName;
-		m_config->fixedFrameRate = DefaultRefreshRate;
 	}
 }
 
@@ -161,6 +165,21 @@ ConfigRef System::getConfig()
 void* System::allocAllignement(size_t size, size_t allign)
 {
 	return _aligned_malloc(size, allign);
+}
+
+void System::parseGraphicsSettings(tinyxml2::XMLNode& node)
+{
+	if (tinyxml2::XMLElement* window = node.FirstChildElement(windowElementName))
+	{
+		m_config->windowsName = window->Attribute(titleAttributetName);
+		window->QueryUnsignedAttribute(widthAttributetName, &m_config->windowSizeX);
+		window->QueryUnsignedAttribute(heightAttributetName, &m_config->windowSizeY);
+	}
+}
+
+void System::parseSceneSettings(tinyxml2::XMLNode& node)
+{
+	m_config->sceneFile = static_cast<tinyxml2::XMLElement*>(static_cast<tinyxml2::XMLNode*>(&node))->Attribute(fileNameAttributetName);
 }
 
 }

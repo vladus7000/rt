@@ -1,7 +1,13 @@
 #pragma once
 #include "system/System.hpp"
 #include "system/Object.hpp"
+#include "render\Camera.hpp"
 #include <vector>
+
+namespace tinyxml2
+{
+	class XMLNode;
+}
 
 namespace rt
 {
@@ -27,10 +33,14 @@ namespace rt
 			const XMMATRIX& getProjectionMatrix() { return m_projection; }
 
 		private:
+			void parseCameraSettings(tinyxml2::XMLNode& node);
+			void parseObjectsSettings(tinyxml2::XMLNode* node, object::Object* root);
+		private:
 			Objects m_objects;
 			XMMATRIX m_view;
 			XMMATRIX m_viewProjection;
 			XMMATRIX m_projection;
+			Camera m_camera;
 		};
 	}
 }
