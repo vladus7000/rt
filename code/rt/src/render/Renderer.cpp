@@ -140,51 +140,50 @@ void Renderer::renderFrame()
 
 		if (m_world)
 		{
-			for (const auto& it : m_world->getObjects())
+			for (const auto& it : m_world->getRenderableObjects())
 			{
 				RenderableContext context;
-				if (auto renderable = it->getCoreComponents().renderable)
+				auto renderable = it->getCoreComponents().renderable;
+				
+				renderable->prepare(m_dx11Device);
+
+				context.clear();
+				if (renderable->fillContext(&context))
 				{
-					renderable->prepare(m_dx11Device);
+					m_dx11Context->IASetInputLayout(context.inputLayout);
+					m_dx11Context->IASetIndexBuffer(context.indexBuffer, DXGI_FORMAT_R16_UINT, 0);
+					m_dx11Context->IASetVertexBuffers(0, 1, &context.vertexBuffer, &context.stride, &context.offset);
+					//context->OMSetDepthStencilState(pDSStateNormal, 1);
 
-					context.clear();
-					if (renderable->fillContext(&context))
+					D3DX11_TECHNIQUE_DESC desc;
+					ID3DX11EffectTechnique* tech;
+					tech = context.dxEffect->GetTechniqueByName("ColorTech");
+					tech->GetDesc(&desc);
+
+					ID3DX11EffectMatrixVariable* fxViewProj = nullptr;
+					ID3DX11EffectMatrixVariable* fxWorld = nullptr;
+					ID3DX11EffectMatrixVariable* fxWorldN = nullptr;
+					ID3DX11EffectMatrixVariable* fxTextureM = nullptr;
+					ID3DX11EffectShaderResourceVariable* SRV = nullptr;
+
+					fxViewProj = context.dxEffect->GetVariableByName("ViewProj")->AsMatrix();
+					fxWorld = context.dxEffect->GetVariableByName("World")->AsMatrix();
+					fxWorldN = context.dxEffect->GetVariableByName("WorldN")->AsMatrix();
+					fxTextureM = context.dxEffect->GetVariableByName("TextureM")->AsMatrix();
+					SRV = context.dxEffect->GetVariableByName("tex")->AsShaderResource();
+
+					XMMATRIX worldNorm = InverseTranspose(it->getWorldTransform());
+
+					SRV->SetResource(context.shaderRV);
+					fxViewProj->SetMatrix((float*)&m_world->getViewProjectionMatrix());
+					fxWorld->SetMatrix((float*)&it->getWorldTransform());
+					fxWorldN->SetMatrix((float*)&worldNorm);
+
+					for (unsigned int i = 0; i < desc.Passes; i++)
 					{
-						m_dx11Context->IASetInputLayout(context.inputLayout);
-						m_dx11Context->IASetIndexBuffer(context.indexBuffer, DXGI_FORMAT_R16_UINT, 0);
-						m_dx11Context->IASetVertexBuffers(0, 1, &context.vertexBuffer, &context.stride, &context.offset);
-						//context->OMSetDepthStencilState(pDSStateNormal, 1);
-
-						D3DX11_TECHNIQUE_DESC desc;
-						ID3DX11EffectTechnique* tech;
-						tech = context.dxEffect->GetTechniqueByName("ColorTech");
-						tech->GetDesc(&desc);
-
-						ID3DX11EffectMatrixVariable* fxViewProj = nullptr;
-						ID3DX11EffectMatrixVariable* fxWorld = nullptr;
-						ID3DX11EffectMatrixVariable* fxWorldN = nullptr;
-						ID3DX11EffectMatrixVariable* fxTextureM = nullptr;
-						ID3DX11EffectShaderResourceVariable* SRV = nullptr;
-
-						fxViewProj = context.dxEffect->GetVariableByName("ViewProj")->AsMatrix();
-						fxWorld = context.dxEffect->GetVariableByName("World")->AsMatrix();
-						fxWorldN = context.dxEffect->GetVariableByName("WorldN")->AsMatrix();
-						fxTextureM = context.dxEffect->GetVariableByName("TextureM")->AsMatrix();
-						SRV = context.dxEffect->GetVariableByName("tex")->AsShaderResource();
-
-						XMMATRIX worldNorm = InverseTranspose(it->getWorldTransform());
-
-						SRV->SetResource(context.shaderRV);
-						fxViewProj->SetMatrix((float*)&m_world->getViewProjectionMatrix());
-						fxWorld->SetMatrix((float*)&it->getWorldTransform());
-						fxWorldN->SetMatrix((float*)&worldNorm);
-
-						for (unsigned int i = 0; i < desc.Passes; i++)
-						{
-							m_dx11Context->IASetPrimitiveTopology(context.topology);
-							tech->GetPassByIndex(i)->Apply(0, m_dx11Context);
-							m_dx11Context->DrawIndexed(context.indexCount, 0, 0);
-						}
+						m_dx11Context->IASetPrimitiveTopology(context.topology);
+						tech->GetPassByIndex(i)->Apply(0, m_dx11Context);
+						m_dx11Context->DrawIndexed(context.indexCount, 0, 0);
 					}
 				}
 			}

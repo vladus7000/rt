@@ -1,6 +1,7 @@
 #include "world/World.hpp"
 #include "tinyxml2/tinyxml2.h"
 #include "system/FileManager.hpp"
+#include "TeapotObject.hpp"
 
 namespace rt
 {
@@ -71,6 +72,18 @@ void World::addObject(object::Object* object)
 	}
 }
 
+const rt::world::World::Objects& World::getRenderableObjects()
+{
+	m_renderableObjects.clear();
+
+	for (auto& it : m_objects)
+	{
+		gatherRenderable(m_renderableObjects, it);
+	}
+
+	return m_renderableObjects;
+}
+
 void World::initCamera(tinyxml2::XMLNode& node, float aspectRatio)
 {
 	float px = 0.0f;
@@ -123,8 +136,20 @@ void World::parseObjects(tinyxml2::XMLNode* child, object::Object* root)
 {
 	for (child; child; child = child->NextSibling())
 	{
-		void* mem = rt::system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
-		object::Object *object = new (mem) object::Object();
+		const char* name = child->ToElement()->Attribute("name");
+		object::Object *object = nullptr;
+		if (strcmp(name, "teapot") == 0) // HACK
+		{
+			void* mem = rt::system::System::allocAllignement(sizeof(object::Teapot), 16); // TODO: improve
+			object = new (mem) object::Teapot();
+		}
+		else
+		{
+			void* mem = rt::system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
+			object = new (mem) object::Object();
+		}
+
+		object->setName(name);
 
 		if (root)
 		{
@@ -134,10 +159,26 @@ void World::parseObjects(tinyxml2::XMLNode* child, object::Object* root)
 		{
 			m_objects.push_back(object);
 		}
-
-		object->setName(child->ToElement()->Attribute("name"));
-
+	
 		parseObjects(child->FirstChildElement("object"), object);
+	}
+}
+
+void World::gatherRenderable(rt::world::World::Objects& renderableObjects, object::Object* root)
+{
+	if (!root)
+	{
+		return;
+	}
+
+	if (root->getCoreComponents().renderable)
+	{
+		renderableObjects.push_back(root);
+	}
+
+	for (auto& it : root->getChilds())
+	{
+		gatherRenderable(renderableObjects, it);
 	}
 }
 

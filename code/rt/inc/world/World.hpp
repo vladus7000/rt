@@ -28,6 +28,8 @@ namespace rt
 			void addObject(object::Object* object);
 			const Objects& getObjects() { return m_objects; }
 
+			const Objects& getRenderableObjects();
+
 			const XMMATRIX& getViewMatrix() { return m_camera.getView(); }
 			const XMMATRIX& getViewProjectionMatrix() { return m_camera.getViewProjection(); }
 			const XMMATRIX& getProjectionMatrix() { return m_camera.getProjection(); }
@@ -35,8 +37,10 @@ namespace rt
 		private:
 			void initCamera(tinyxml2::XMLNode& node, float aspectRatio);
 			void parseObjects(tinyxml2::XMLNode* node, object::Object* root);
+			void gatherRenderable(rt::world::World::Objects& renderableObjects, object::Object* root);
 		private:
 			Objects m_objects;
+			Objects m_renderableObjects;
 			Camera m_camera;
 		};
 	}

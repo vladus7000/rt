@@ -6,13 +6,13 @@
 	<perspective fovAngleY="0.785398" near="1.0" far="100.0"/>
 </camera>
 <objects>
-	<object name="el0" file="models/test.obj" position="0.0, 0.0, 0.0" rotationE="0.0, 0.0, 0.0" scale="1.0, 1.0, 1.0">
-		<object name="child" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationE="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
-		<object name="child2" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationE="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5">
-			<object name="subchild" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationE="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
+	<object name="el0" file="models/test.obj" position="0.0, 0.0, 0.0" rotationEuler="0.0, 0.0, 0.0" scale="1.0, 1.0, 1.0">
+		<object name="child" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationEuler="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
+		<object name="child2" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationEuler="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5">
+			<object name="teapot" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationEuler="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
 		</object>
 	</object>
-	<object name="el1" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationE="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
-	<object name="el2" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationE="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
+	<object name="el1" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationEuler="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
+	<object name="el2" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationEuler="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
 </objects>
 </scene>

@@ -2,7 +2,7 @@
 #include "render/Renderer.hpp"
 #include "system/FileManager.hpp"
 #include "world/World.hpp"
-#include "TeapotObject.hpp"
+
 #include <iostream>
 #include <new>
 
@@ -24,11 +24,6 @@ int main()
 	success &= system.init();
 	success &= render.init(system.getConfig());
 	success &= world.init(system.getConfig());
-
-	void* mem = system.allocAllignement(sizeof(Teapot), 16);
-	rt::object::Teapot* teapot = new (mem) Teapot();
-
-	world.addObject(teapot);
 
 	render.setWorld(&world);
 

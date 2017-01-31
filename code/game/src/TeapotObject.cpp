@@ -7,10 +7,8 @@ namespace object
 
 Teapot::Teapot()
 {
-	XMMATRIX trans = XMMatrixTranslation(0.0f, 0.0f, 1.0f);
-	XMMATRIX Rot = XMMatrixRotationY(1.5708f);
-
-	m_world = Rot * trans;
+	setPosition(XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f));
+	setRotationEuler(XMVectorSet(0.0f, 0.0f, 3.14f / 2.0f, 0.0f));
 
 	m_coreComponents.renderable = &m_renderable;
 }
@@ -22,6 +20,7 @@ Teapot::~Teapot()
 
 void Teapot::update(float delta)
 {
+	Object::update(delta);
 	m_renderable.update(delta);
 }
 
