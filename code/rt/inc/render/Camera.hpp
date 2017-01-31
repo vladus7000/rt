@@ -12,9 +12,10 @@ namespace rt
 
 		void setView(const XMMATRIX& view) { m_view = view; };
 		void setProjection(const XMMATRIX& projection) { m_projection = projection; };
-		void buildProjectionMatrix(float fov, float nearZ, float farZ, float px, float py, float pz, float upx, float upy, float upz, float tx, float ty, float tz) {} // TODO: implement and refactor
+		void buildProjectionMatrix(float aspect, float fov, float nearZ, float farZ, const XMVECTOR& position, const XMVECTOR& up, const XMVECTOR& target);
 
 		const XMMATRIX& getView() const { return m_view; }
+		const XMMATRIX& getViewProjection() const { return m_viewProjection; }
 		const XMMATRIX& getProjection() const { return m_projection; }
 		
 		void setPosition() {} // TODO: implement;
@@ -23,5 +24,6 @@ namespace rt
 	private:
 		XMMATRIX m_projection;
 		XMMATRIX m_view;
+		XMMATRIX m_viewProjection;
 	};
 }

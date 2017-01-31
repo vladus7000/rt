@@ -1,6 +1,7 @@
 #include "world/World.hpp"
 #include "tinyxml2/tinyxml2.h"
 #include "system/FileManager.hpp"
+
 namespace rt
 {
 namespace world
@@ -31,34 +32,17 @@ bool World::init(system::ConfigRef config)
 			{
 				if (tinyxml2::XMLElement* graphics = root->FirstChildElement("camera"))
 				{
-					parseCameraSettings(*graphics);
+					initCamera(*graphics, static_cast<float>(config->windowSizeX) / static_cast<float>(config->windowSizeY));
 				}
 
 				if (tinyxml2::XMLNode* scene = root->FirstChildElement("objects"))
 				{
 					tinyxml2::XMLNode* objectNode = scene->FirstChildElement("object");
-					parseObjectsSettings(objectNode, nullptr);
+					parseObjects(objectNode, nullptr);
 				}
 			}
 		}
 	}
-
-	float nearPlane = 1.0f;
-	float farPlane = 100.0f;
-
-	XMVECTOR pos = XMVectorSet(0.0f, 5.0f, -8.0f, 1.0f);
-	XMVECTOR target = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	m_view = XMMatrixLookAtLH(pos, target, up);
-
-	//0,785398 = 45deg
-	m_projection = XMMatrixPerspectiveFovLH(0.785398f, static_cast<float>(config->windowSizeX) / static_cast<float>(config->windowSizeY), nearPlane, farPlane);
-
-
-	m_viewProjection = m_view * m_projection;
-	//XMMATRIX Identity = XMMatrixIdentity();
-
 	return true;
 }
 
@@ -87,7 +71,7 @@ void World::addObject(object::Object* object)
 	}
 }
 
-void World::parseCameraSettings(tinyxml2::XMLNode& node)
+void World::initCamera(tinyxml2::XMLNode& node, float aspectRatio)
 {
 	float px = 0.0f;
 	float py = 0.0f;
@@ -132,15 +116,16 @@ void World::parseCameraSettings(tinyxml2::XMLNode& node)
 		perspective->QueryFloatAttribute("near", &nearZ);
 		perspective->QueryFloatAttribute("far", &farZ);
 	}
-	m_camera.buildProjectionMatrix(fov, nearZ, farZ, px, py, pz, ux, uy, uz, tx, ty, tz);
+	m_camera.buildProjectionMatrix(aspectRatio, fov, nearZ, farZ, XMVectorSet(px, py, pz, 1.0f), XMVectorSet(ux, uy, uz, 0.0f), XMVectorSet(tx, ty, tz, 0.0f));
 }
 
-void World::parseObjectsSettings(tinyxml2::XMLNode* child, object::Object* root)
+void World::parseObjects(tinyxml2::XMLNode* child, object::Object* root)
 {
 	for (child; child; child = child->NextSibling())
 	{
-		object::Object *object = new object::Object();
-		
+		void* mem = rt::system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
+		object::Object *object = new (mem) object::Object();
+
 		if (root)
 		{
 			root->addChild(object);
@@ -152,7 +137,7 @@ void World::parseObjectsSettings(tinyxml2::XMLNode* child, object::Object* root)
 
 		object->setName(child->ToElement()->Attribute("name"));
 
-		parseObjectsSettings(child->FirstChildElement("object"), object);
+		parseObjects(child->FirstChildElement("object"), object);
 	}
 }
 

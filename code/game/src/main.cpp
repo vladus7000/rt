@@ -26,8 +26,8 @@ int main()
 	success &= world.init(system.getConfig());
 
 	void* mem = system.allocAllignement(sizeof(Teapot), 16);
-
 	rt::object::Teapot* teapot = new (mem) Teapot();
+
 	world.addObject(teapot);
 
 	render.setWorld(&world);

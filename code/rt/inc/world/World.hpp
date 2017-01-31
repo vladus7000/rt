@@ -28,18 +28,15 @@ namespace rt
 			void addObject(object::Object* object);
 			const Objects& getObjects() { return m_objects; }
 
-			const XMMATRIX& getViewMatrix() { return m_view; }
-			const XMMATRIX& getViewProjectionMatrix() { return m_viewProjection; }
-			const XMMATRIX& getProjectionMatrix() { return m_projection; }
+			const XMMATRIX& getViewMatrix() { return m_camera.getView(); }
+			const XMMATRIX& getViewProjectionMatrix() { return m_camera.getViewProjection(); }
+			const XMMATRIX& getProjectionMatrix() { return m_camera.getProjection(); }
 
 		private:
-			void parseCameraSettings(tinyxml2::XMLNode& node);
-			void parseObjectsSettings(tinyxml2::XMLNode* node, object::Object* root);
+			void initCamera(tinyxml2::XMLNode& node, float aspectRatio);
+			void parseObjects(tinyxml2::XMLNode* node, object::Object* root);
 		private:
 			Objects m_objects;
-			XMMATRIX m_view;
-			XMMATRIX m_viewProjection;
-			XMMATRIX m_projection;
 			Camera m_camera;
 		};
 	}
