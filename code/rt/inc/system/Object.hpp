@@ -44,6 +44,7 @@ namespace rt
 
 			void setPosition(const XMVECTOR& position);
 			void setRotation(const XMVECTOR& rotation);
+			void setScale(const XMVECTOR& scale);
 
 			/*
 			* meaning:
@@ -52,6 +53,8 @@ namespace rt
 			* z = Yaw
 			*/
 			void setRotationEuler(const XMVECTOR& rotation);
+
+			void setRenderable(Renderable* renderable);
 
 			const XMVECTOR& getPosition() const;
 			const XMVECTOR& getRotation() const;

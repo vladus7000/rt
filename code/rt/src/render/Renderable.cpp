@@ -25,6 +25,7 @@ struct SimpleVertexFormat
 
 Renderable::Renderable()
 {
+	m_inited = false;
 }
 
 Renderable::~Renderable()
@@ -42,10 +43,9 @@ void Renderable::update(float delta)
 
 void Renderable::prepare(ID3D11Device* device)
 {
-	static bool inited = false;
-	if (device && !inited)
+	if (device && !m_inited)
 	{
-		inited = true;
+		m_inited = true;
 
 		D3D11_BUFFER_DESC vbDesc;
 		vbDesc.Usage = D3D11_USAGE_IMMUTABLE;

@@ -13,6 +13,11 @@ CoreComponents::CoreComponents()
 
 CoreComponents::~CoreComponents()
 {
+	if (renderable)
+	{
+		delete renderable;
+		renderable = nullptr;
+	}
 }
 
 Object::Object()
@@ -90,10 +95,10 @@ const XMMATRIX& Object::getWorldTransform()
 	Object* root = getRoot();
 	while (root)
 	{
-		parentsTransform = XMMatrixMultiply(parentsTransform, root->getTransform());
+		parentsTransform = XMMatrixMultiply(parentsTransform, root->getTransform()); // TODO: check!!!!
 		root = root->getRoot();
 	}
-	m_WorldTransform = XMMatrixMultiply(parentsTransform, m_transform);
+	m_WorldTransform = XMMatrixMultiply(m_transform, parentsTransform); // TODO: check!!!
 	return m_WorldTransform;
 }
 
@@ -107,9 +112,24 @@ void Object::setRotation(const XMVECTOR & rotation)
 	m_rotation = rotation;
 }
 
+void Object::setScale(const XMVECTOR& scale)
+{
+	m_scale = scale;
+}
+
 void Object::setRotationEuler(const XMVECTOR& rotation)
 {
 	m_rotation =  XMQuaternionRotationRollPitchYaw(rotation.m128_f32[1], rotation.m128_f32[2], rotation.m128_f32[0]);
+}
+
+void Object::setRenderable(Renderable* renderable)
+{
+	if (m_coreComponents.renderable)
+	{
+		delete m_coreComponents.renderable;
+	}
+
+	m_coreComponents.renderable = renderable;
 }
 
 const XMVECTOR& Object::getPosition() const

@@ -37,6 +37,9 @@ namespace rt
 		private:
 			void initCamera(tinyxml2::XMLNode& node, float aspectRatio);
 			void parseObjects(tinyxml2::XMLNode* node, object::Object* root);
+			void parseComponents(tinyxml2::XMLNode* node, object::Object* object);
+			void parseTransformComponent(tinyxml2::XMLNode* node, object::Object* object);
+			void parseGraphicsComponent(tinyxml2::XMLNode* node, object::Object* object);
 			void gatherRenderable(rt::world::World::Objects& renderableObjects, object::Object* root);
 		private:
 			Objects m_objects;

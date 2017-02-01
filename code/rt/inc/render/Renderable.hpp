@@ -31,6 +31,7 @@ namespace rt
 		bool fillContext(RenderableContext* context);
 
 	private:
+		bool m_inited;
 		ID3D11Buffer* m_vertexBuffer = nullptr;
 		ID3D11Buffer* m_indexBuffer = nullptr;
 		ID3DX11Effect* m_dxEffect = nullptr;

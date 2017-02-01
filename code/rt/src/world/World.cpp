@@ -136,20 +136,14 @@ void World::parseObjects(tinyxml2::XMLNode* child, object::Object* root)
 {
 	for (child; child; child = child->NextSibling())
 	{
-		const char* name = child->ToElement()->Attribute("name");
-		object::Object *object = nullptr;
-		if (strcmp(name, "teapot") == 0) // HACK
-		{
-			void* mem = rt::system::System::allocAllignement(sizeof(object::Teapot), 16); // TODO: improve
-			object = new (mem) object::Teapot();
-		}
-		else
-		{
-			void* mem = rt::system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
-			object = new (mem) object::Object();
-		}
+		void* mem = rt::system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
+		object::Object *object = new (mem) object::Object();
 
+		const char* name = child->ToElement()->Attribute("name");
 		object->setName(name);
+
+		//parse components
+		parseComponents(child->FirstChildElement("components"), object);
 
 		if (root)
 		{
@@ -162,6 +156,74 @@ void World::parseObjects(tinyxml2::XMLNode* child, object::Object* root)
 	
 		parseObjects(child->FirstChildElement("object"), object);
 	}
+}
+
+void World::parseComponents(tinyxml2::XMLNode* node, object::Object* object)
+{
+	if (node)
+	{
+		node = node->FirstChild();
+		for (node; node; node = node->NextSibling())
+		{
+			const char* name = node->ToElement()->Name();
+			if (!strcmp(name, "transform"))
+			{
+				parseTransformComponent(node, object);
+			}
+			else if (!strcmp(name, "graphics"))
+			{
+				parseGraphicsComponent(node, object);
+			}
+		}
+	}
+}
+
+void World::parseTransformComponent(tinyxml2::XMLNode* node, object::Object* object)
+{
+	if (tinyxml2::XMLElement* position = node->FirstChildElement("position"))
+	{
+		float a = 0.0f;
+		float b = 0.0f;
+		float c = 0.0f;
+
+		position->QueryFloatAttribute("x", &a);
+		position->QueryFloatAttribute("y", &b);
+		position->QueryFloatAttribute("z", &c);
+
+		object->setPosition(XMVectorSet(a, b, c, 1.0f));
+	}
+
+	if (tinyxml2::XMLElement* rotation = node->FirstChildElement("rotationEuler"))
+	{
+		float a = 0.0f;
+		float b = 0.0f;
+		float c = 0.0f;
+
+		rotation->QueryFloatAttribute("x", &a);
+		rotation->QueryFloatAttribute("y", &b);
+		rotation->QueryFloatAttribute("z", &c);
+
+		object->setRotationEuler(XMVectorSet(a, b, c, 0.0f));
+	}
+
+	if (tinyxml2::XMLElement* scale = node->FirstChildElement("scale"))
+	{
+		float a = 0.0f;
+		float b = 0.0f;
+		float c = 0.0f;
+
+		scale->QueryFloatAttribute("x", &a);
+		scale->QueryFloatAttribute("y", &b);
+		scale->QueryFloatAttribute("z", &c);
+
+		object->setScale(XMVectorSet(a, b, c, 1.0f));
+	}
+}
+
+void World::parseGraphicsComponent(tinyxml2::XMLNode* node, object::Object* object)
+{
+	Renderable* renderable = new Renderable();
+	object->setRenderable(renderable);
 }
 
 void World::gatherRenderable(rt::world::World::Objects& renderableObjects, object::Object* root)
