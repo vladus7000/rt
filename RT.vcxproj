@@ -23,6 +23,7 @@
     <ClCompile Include="code\game\src\main.cpp" />
     <ClCompile Include="code\game\src\TeapotObject.cpp" />
     <ClCompile Include="code\rt\src\render\Camera.cpp" />
+    <ClCompile Include="code\rt\src\render\MeshContainer.cpp" />
     <ClCompile Include="code\rt\src\render\Renderable.cpp" />
     <ClCompile Include="code\rt\src\render\Renderer.cpp" />
     <ClCompile Include="code\rt\src\system\FileManager.cpp" />
@@ -36,12 +37,14 @@
     <ClInclude Include="code\game\inc\teapot.h" />
     <ClInclude Include="code\game\inc\TeapotObject.hpp" />
     <ClInclude Include="code\rt\inc\render\Camera.hpp" />
+    <ClInclude Include="code\rt\inc\render\MeshContainer.hpp" />
     <ClInclude Include="code\rt\inc\render\Renderable.hpp" />
     <ClInclude Include="code\rt\inc\render\Renderer.hpp" />
     <ClInclude Include="code\rt\inc\system\FileManager.hpp" />
     <ClInclude Include="code\rt\inc\system\Object.hpp" />
     <ClInclude Include="code\rt\inc\system\Resources.h" />
     <ClInclude Include="code\rt\inc\system\System.hpp" />
+    <ClInclude Include="code\rt\inc\utils\BBOX.hpp" />
     <ClInclude Include="code\rt\inc\world\World.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

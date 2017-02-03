@@ -1,6 +1,11 @@
 #pragma once
+
 #include <d3dx11effect.h>
 #include <d3d11.h>
+#include <xnamath.h>
+
+#include "render/MeshContainer.hpp"
+#include "utils/BBOX.hpp"
 
 namespace rt
 {
@@ -31,7 +36,11 @@ namespace rt
 		bool fillContext(RenderableContext* context);
 
 	private:
+		BBOX m_bbox;
+		MeshContainer m_meshContainer;
+
 		bool m_inited;
+
 		ID3D11Buffer* m_vertexBuffer = nullptr;
 		ID3D11Buffer* m_indexBuffer = nullptr;
 		ID3DX11Effect* m_dxEffect = nullptr;

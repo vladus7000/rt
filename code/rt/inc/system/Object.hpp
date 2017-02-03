@@ -20,7 +20,7 @@ namespace rt
 		class Object
 		{
 		public:
-				using Objects = std::vector<object::Object*>;
+			using Objects = std::vector<object::Object*>;
 			Object();
 			virtual ~Object();
 

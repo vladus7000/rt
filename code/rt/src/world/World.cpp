@@ -38,8 +38,15 @@ bool World::init(system::ConfigRef config)
 
 				if (tinyxml2::XMLNode* scene = root->FirstChildElement("objects"))
 				{
+					// creating root object
+					void* mem = rt::system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
+					object::Object *root = new (mem) object::Object();
+					root->setName("Root");
+
+					m_objects.push_back(root);
+
 					tinyxml2::XMLNode* objectNode = scene->FirstChildElement("object");
-					parseObjects(objectNode, nullptr);
+					parseObjects(objectNode, root);
 				}
 			}
 		}

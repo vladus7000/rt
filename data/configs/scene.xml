@@ -21,7 +21,7 @@
 					<rotationEuler x="0.0" y="0.0" z="0.0f"/>
 					<scale x="1.0" y="1.5" z="1.0f"/>
 				</transform>
-				<graphics file="models/test.obj"/>
+				<graphics file="models/test.obj" material="materials/solid.mat"/>
 			</components>
 		</object>
 		<object name="child2">
@@ -35,7 +35,5 @@
 			</components>
 		</object>
 	</object>
-	<object name="el1" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationEuler="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
-	<object name="el2" file="models/test2.obj" position="2.0, 2.0, 2.0" rotationEuler="45.0, 0.0, 0.0" scale="1.5, 1.5, 1.5"/>
 </objects>
 </scene>
