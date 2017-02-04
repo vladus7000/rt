@@ -2,50 +2,50 @@
 
 namespace rt
 {
-	Components::Components()
+Components::Components()
+{
+	m_components.resize(2);
+	for (auto &it : m_components)
 	{
-		m_components.resize(2);
-		for (auto &it : m_components)
-		{
-			it = nullptr;
-		}
+		it = nullptr;
 	}
+}
 
-	Components::~Components()
+Components::~Components()
+{
+	for (auto &it : m_components)
 	{
-		for (auto &it : m_components)
-		{
-			delete it;
-		}
-		m_components.clear();
+		delete it;
 	}
+	m_components.clear();
+}
 
-	void Components::update(float dt)
+void Components::update(float dt)
+{
+	for (auto &it : m_components)
 	{
-		for (auto &it : m_components)
+		if (it)
 		{
-			if (it)
-			{
-				it->update(dt);
-			}
+			it->update(dt);
 		}
 	}
+}
 
-	void Components::setRenderable(Component* renderable)
+void Components::setRenderable(Component* renderable)
+{
+	if (m_components[0])
 	{
-		if (m_components[0])
-		{
-			delete m_components[0];
-		}
-		m_components[0] = renderable;
+		delete m_components[0];
 	}
+	m_components[0] = renderable;
+}
 
-	void Components::setTransform(Component* transform)
+void Components::setTransform(Component* transform)
+{
+	if (m_components[1])
 	{
-		if (m_components[1])
-		{
-			delete m_components[1];
-		}
-		m_components[1] = transform;
+		delete m_components[1];
 	}
+	m_components[1] = transform;
+}
 }
