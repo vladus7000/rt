@@ -1,6 +1,6 @@
 #pragma once
 #include "system/Object.hpp"
-#include "render/Renderable.hpp"
+#include "components/Renderable.hpp"
 
 namespace rt
 {

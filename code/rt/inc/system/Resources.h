@@ -1,7 +1,9 @@
 #pragma once
-#include "System.hpp"
+
 #include <d3d11.h>
 #include <D3Dcompiler.h>
+
+#include "System.hpp"
 
 namespace rt
 {

@@ -1,6 +1,8 @@
 #pragma once
+
 #include <string>
 #include <memory>
+
 #include "System.hpp"
 
 namespace rt

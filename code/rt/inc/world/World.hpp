@@ -1,8 +1,9 @@
 #pragma once
+#include <vector>
+
 #include "system/System.hpp"
 #include "system/Object.hpp"
-#include "render\Camera.hpp"
-#include <vector>
+#include "render/Camera.hpp"
 
 namespace tinyxml2
 {
@@ -35,7 +36,7 @@ namespace rt
 			const XMMATRIX& getProjectionMatrix() { return m_camera.getProjection(); }
 
 		private:
-			void initCamera(tinyxml2::XMLNode& node, float aspectRatio);
+			void initCamera(tinyxml2::XMLNode* node, float aspectRatio);
 			void parseObjects(tinyxml2::XMLNode* node, object::Object* root);
 			void parseComponents(tinyxml2::XMLNode* node, object::Object* object);
 			void parseTransformComponent(tinyxml2::XMLNode* node, object::Object* object);

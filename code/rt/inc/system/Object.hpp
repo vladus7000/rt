@@ -5,18 +5,12 @@
 #include <vector>
 #include <string>
 
+#include "components/Components.hpp"
+
 namespace rt
 {
-	class Renderable;
 	namespace object
 	{
-		struct CoreComponents
-		{
-			CoreComponents();
-			~CoreComponents();
-			Renderable* renderable;
-		};
-
 		class Object
 		{
 		public:
@@ -24,7 +18,8 @@ namespace rt
 			Object();
 			virtual ~Object();
 
-			const CoreComponents& getCoreComponents() const { return m_coreComponents; }
+			const Components& getCoreComponents() const { return m_coreComponents; }
+			Components& getCoreComponents() { return m_coreComponents; }
 
 			virtual void update(float delta);
 
@@ -38,34 +33,8 @@ namespace rt
 			void setName(const std::string& name) { m_name = name; };
 			const std::string& getName() const { return m_name; }
 
-			const XMMATRIX& getTransform() { return m_transform; }
-			const XMMATRIX& getWorldTransform();
-			void setTransform(const XMMATRIX& transform) { m_transform = transform; }
-
-			void setPosition(const XMVECTOR& position);
-			void setRotation(const XMVECTOR& rotation);
-			void setScale(const XMVECTOR& scale);
-
-			/*
-			* meaning:
-			* x = Roll
-			* y = Pitch
-			* z = Yaw
-			*/
-			void setRotationEuler(const XMVECTOR& rotation);
-
-			void setRenderable(Renderable* renderable);
-
-			const XMVECTOR& getPosition() const;
-			const XMVECTOR& getRotation() const;
-
 		protected:
-			XMVECTOR m_position;
-			XMVECTOR m_rotation;
-			XMVECTOR m_scale;
-			XMMATRIX m_transform;
-			XMMATRIX m_WorldTransform;
-			CoreComponents m_coreComponents;
+			Components m_coreComponents;
 			Objects m_childs;
 			Object* m_root = nullptr;
 			std::string m_name = "dummy";

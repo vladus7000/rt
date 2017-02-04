@@ -1,6 +1,7 @@
 #include "render/Renderer.hpp"
 #include "system/Resources.h"
-#include "render/Renderable.hpp"
+#include "components/Renderable.hpp"
+#include "components/Transform.hpp"
 #include <string>
 
 namespace rt
@@ -143,7 +144,7 @@ void Renderer::renderFrame()
 			for (const auto& it : m_world->getRenderableObjects())
 			{
 				RenderableContext context;
-				auto renderable = it->getCoreComponents().renderable;
+				auto renderable =  static_cast<Renderable*>(it->getCoreComponents().getRenderable());
 				
 				renderable->prepare(m_dx11Device);
 
@@ -172,11 +173,13 @@ void Renderer::renderFrame()
 					fxTextureM = context.dxEffect->GetVariableByName("TextureM")->AsMatrix();
 					SRV = context.dxEffect->GetVariableByName("tex")->AsShaderResource();
 
-					XMMATRIX worldNorm = InverseTranspose(it->getWorldTransform());
+					auto transform = static_cast<Transform*>(it->getCoreComponents().getTransform());
+
+					XMMATRIX worldNorm = InverseTranspose(transform->getWorldTransform(it));
 
 					SRV->SetResource(context.shaderRV);
 					fxViewProj->SetMatrix((float*)&m_world->getViewProjectionMatrix());
-					fxWorld->SetMatrix((float*)&it->getWorldTransform());
+					fxWorld->SetMatrix((float*)&transform->getWorldTransform(it));
 					fxWorldN->SetMatrix((float*)&worldNorm);
 
 					for (unsigned int i = 0; i < desc.Passes; i++)

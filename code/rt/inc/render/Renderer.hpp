@@ -1,8 +1,10 @@
 #pragma once
-#include "system/System.hpp"
-#include "world/World.hpp"
+
 #include <d3d11.h>
 #include <D3Dcompiler.h>
+
+#include "system/System.hpp"
+#include "world/World.hpp"
 
 namespace rt
 {

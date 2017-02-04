@@ -1,7 +1,9 @@
 #include "world/World.hpp"
 #include "tinyxml2/tinyxml2.h"
 #include "system/FileManager.hpp"
-#include "TeapotObject.hpp"
+
+#include "components/Renderable.hpp"
+#include "components/Transform.hpp"
 
 namespace rt
 {
@@ -31,9 +33,9 @@ bool World::init(system::ConfigRef config)
 		{
 			if (tinyxml2::XMLNode* root = xmlDoc.RootElement())
 			{
-				if (tinyxml2::XMLElement* graphics = root->FirstChildElement("camera"))
+				if (tinyxml2::XMLNode* cameraNode = root->FirstChildElement("camera"))
 				{
-					initCamera(*graphics, static_cast<float>(config->windowSizeX) / static_cast<float>(config->windowSizeY));
+					initCamera(cameraNode, static_cast<float>(config->windowSizeX) / static_cast<float>(config->windowSizeY));
 				}
 
 				if (tinyxml2::XMLNode* scene = root->FirstChildElement("objects"))
@@ -67,7 +69,10 @@ void World::update(float delta)
 {
 	for (auto& it : m_objects)
 	{
-		it->update(delta);
+		if (it)
+		{
+			it->update(delta);
+		}
 	}
 }
 
@@ -91,7 +96,7 @@ const rt::world::World::Objects& World::getRenderableObjects()
 	return m_renderableObjects;
 }
 
-void World::initCamera(tinyxml2::XMLNode& node, float aspectRatio)
+void World::initCamera(tinyxml2::XMLNode* node, float aspectRatio)
 {
 	float px = 0.0f;
 	float py = 0.0f;
@@ -109,28 +114,28 @@ void World::initCamera(tinyxml2::XMLNode& node, float aspectRatio)
 	float nearZ = 0.0f;
 	float farZ = 0.0f;
 
-	if (tinyxml2::XMLElement* position = node.FirstChildElement("position"))
+	if (tinyxml2::XMLElement* position = node->FirstChildElement("position"))
 	{
 		position->QueryFloatAttribute("x", &px);
 		position->QueryFloatAttribute("y", &py);
 		position->QueryFloatAttribute("z", &pz);
 	}
 
-	if (tinyxml2::XMLElement* target = node.FirstChildElement("target"))
+	if (tinyxml2::XMLElement* target = node->FirstChildElement("target"))
 	{
 		target->QueryFloatAttribute("x", &tx);
 		target->QueryFloatAttribute("y", &ty);
 		target->QueryFloatAttribute("z", &tz);
 	}
 
-	if (tinyxml2::XMLElement* up = node.FirstChildElement("up"))
+	if (tinyxml2::XMLElement* up = node->FirstChildElement("up"))
 	{
 		up->QueryFloatAttribute("x", &ux);
 		up->QueryFloatAttribute("y", &uy);
 		up->QueryFloatAttribute("z", &uz);
 	}
 
-	if (tinyxml2::XMLElement* perspective = node.FirstChildElement("perspective"))
+	if (tinyxml2::XMLElement* perspective = node->FirstChildElement("perspective"))
 	{
 		perspective->QueryFloatAttribute("fovAngleY", &fov);
 		perspective->QueryFloatAttribute("near", &nearZ);
@@ -187,6 +192,9 @@ void World::parseComponents(tinyxml2::XMLNode* node, object::Object* object)
 
 void World::parseTransformComponent(tinyxml2::XMLNode* node, object::Object* object)
 {
+	void* mem = rt::system::System::allocAllignement(sizeof(Transform), 16); // TODO: improve
+	Transform* transform = new (mem) Transform();
+
 	if (tinyxml2::XMLElement* position = node->FirstChildElement("position"))
 	{
 		float a = 0.0f;
@@ -197,7 +205,7 @@ void World::parseTransformComponent(tinyxml2::XMLNode* node, object::Object* obj
 		position->QueryFloatAttribute("y", &b);
 		position->QueryFloatAttribute("z", &c);
 
-		object->setPosition(XMVectorSet(a, b, c, 1.0f));
+		transform->setPosition(XMVectorSet(a, b, c, 1.0f));
 	}
 
 	if (tinyxml2::XMLElement* rotation = node->FirstChildElement("rotationEuler"))
@@ -209,8 +217,12 @@ void World::parseTransformComponent(tinyxml2::XMLNode* node, object::Object* obj
 		rotation->QueryFloatAttribute("x", &a);
 		rotation->QueryFloatAttribute("y", &b);
 		rotation->QueryFloatAttribute("z", &c);
+		
+		a = a / 180.0f * XM_PI;
+		b = b / 180.0f * XM_PI;
+		c = c / 180.0f * XM_PI;
 
-		object->setRotationEuler(XMVectorSet(a, b, c, 0.0f));
+		transform->setRotationEuler(XMVectorSet(a, b, c, 0.0f));
 	}
 
 	if (tinyxml2::XMLElement* scale = node->FirstChildElement("scale"))
@@ -223,14 +235,16 @@ void World::parseTransformComponent(tinyxml2::XMLNode* node, object::Object* obj
 		scale->QueryFloatAttribute("y", &b);
 		scale->QueryFloatAttribute("z", &c);
 
-		object->setScale(XMVectorSet(a, b, c, 1.0f));
+		transform->setScale(XMVectorSet(a, b, c, 1.0f));
 	}
+
+	object->getCoreComponents().setTransform(transform);
 }
 
 void World::parseGraphicsComponent(tinyxml2::XMLNode* node, object::Object* object)
 {
 	Renderable* renderable = new Renderable();
-	object->setRenderable(renderable);
+	object->getCoreComponents().setRenderable(renderable);
 }
 
 void World::gatherRenderable(rt::world::World::Objects& renderableObjects, object::Object* root)
@@ -240,7 +254,7 @@ void World::gatherRenderable(rt::world::World::Objects& renderableObjects, objec
 		return;
 	}
 
-	if (root->getCoreComponents().renderable)
+	if (root->getCoreComponents().getRenderable())
 	{
 		renderableObjects.push_back(root);
 	}
