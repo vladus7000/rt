@@ -243,7 +243,9 @@ void World::parseTransformComponent(tinyxml2::XMLNode* node, object::Object* obj
 
 void World::parseGraphicsComponent(tinyxml2::XMLNode* node, object::Object* object)
 {
-	Renderable* renderable = new Renderable();
+	void* mem = rt::system::System::allocAllignement(sizeof(Renderable), 16); // TODO: improve
+	Renderable* renderable = new (mem) Renderable();
+	
 	object->getCoreComponents().setRenderable(renderable);
 }
 
