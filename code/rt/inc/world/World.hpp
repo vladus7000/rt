@@ -41,7 +41,7 @@ namespace rt
 			void parseComponents(tinyxml2::XMLNode* node, object::Object* object);
 			void parseTransformComponent(tinyxml2::XMLNode* node, object::Object* object);
 			void parseGraphicsComponent(tinyxml2::XMLNode* node, object::Object* object);
-			void gatherRenderable(rt::world::World::Objects& renderableObjects, object::Object* root);
+			void gatherRenderable(Objects& renderableObjects, object::Object* root);
 		private:
 			Objects m_objects;
 			Objects m_renderableObjects;

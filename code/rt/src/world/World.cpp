@@ -41,7 +41,7 @@ bool World::init(system::ConfigRef config)
 				if (tinyxml2::XMLNode* scene = root->FirstChildElement("objects"))
 				{
 					// creating root object
-					void* mem = rt::system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
+					void* mem = system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
 					object::Object *root = new (mem) object::Object();
 					root->setName("Root");
 
@@ -84,7 +84,7 @@ void World::addObject(object::Object* object)
 	}
 }
 
-const rt::world::World::Objects& World::getRenderableObjects()
+const World::Objects& World::getRenderableObjects()
 {
 	m_renderableObjects.clear();
 
@@ -148,7 +148,7 @@ void World::parseObjects(tinyxml2::XMLNode* child, object::Object* root)
 {
 	for (child; child; child = child->NextSibling())
 	{
-		void* mem = rt::system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
+		void* mem = system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
 		object::Object *object = new (mem) object::Object();
 
 		const char* name = child->ToElement()->Attribute("name");
@@ -192,7 +192,7 @@ void World::parseComponents(tinyxml2::XMLNode* node, object::Object* object)
 
 void World::parseTransformComponent(tinyxml2::XMLNode* node, object::Object* object)
 {
-	void* mem = rt::system::System::allocAllignement(sizeof(Transform), 16); // TODO: improve
+	void* mem = system::System::allocAllignement(sizeof(Transform), 16); // TODO: improve
 	Transform* transform = new (mem) Transform();
 
 	if (tinyxml2::XMLElement* position = node->FirstChildElement("position"))
@@ -243,13 +243,13 @@ void World::parseTransformComponent(tinyxml2::XMLNode* node, object::Object* obj
 
 void World::parseGraphicsComponent(tinyxml2::XMLNode* node, object::Object* object)
 {
-	void* mem = rt::system::System::allocAllignement(sizeof(Renderable), 16); // TODO: improve
+	void* mem = system::System::allocAllignement(sizeof(Renderable), 16); // TODO: improve
 	Renderable* renderable = new (mem) Renderable();
 	
 	object->getCoreComponents().setRenderable(renderable);
 }
 
-void World::gatherRenderable(rt::world::World::Objects& renderableObjects, object::Object* root)
+void World::gatherRenderable(World::Objects& renderableObjects, object::Object* root)
 {
 	if (!root)
 	{
