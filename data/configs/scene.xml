@@ -10,7 +10,7 @@
 		<components>
 			<transform>
 				<position x="0.0" y="0.5" z="0.0f"/>
-				<rotationEuler x="60" y="0.0" z="0.0f"/>
+				<rotationEuler x="0" y="0.0" z="0.0f"/>
 				<scale x="1.5" y="1.0" z="1.0f"/>
 			</transform>
 		</components>
@@ -32,6 +32,16 @@
 					<scale x="1.0" y="1.5" z="1.0f"/>
 				</transform>
 				<graphics file="models/test.obj"/>
+			</components>
+		</object>
+		<object name="terrain">
+			<components>
+				<transform>
+					<position x="0.0" y="0.0" z="0.0f"/>
+					<rotationEuler x="0.0" y="0.0" z="0.0f"/>
+					<scale x="1.0" y="1.0" z="1.0f"/>
+				</transform>
+				<terrain size="100"/>
 			</components>
 		</object>
 	</object>

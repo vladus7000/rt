@@ -4,11 +4,19 @@
 
 namespace rt
 {
+	namespace object
+	{
+		class Object;
+	}
+
 	class Component
 	{
 	public:
 		virtual ~Component() {};
 		virtual void update(float dt) {};
+		void setOwner(object::Object* owner) { m_owner = owner; }
+	protected:
+		object::Object* m_owner = nullptr;
 	};
 
 	class Components

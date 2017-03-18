@@ -4,6 +4,7 @@
 
 #include "components/Renderable.hpp"
 #include "components/Transform.hpp"
+#include "world/Terrain.hpp"
 
 namespace rt
 {
@@ -186,6 +187,10 @@ void World::parseComponents(tinyxml2::XMLNode* node, object::Object* object)
 			{
 				parseGraphicsComponent(node, object);
 			}
+			else if (!strcmp(name, "terrain"))
+			{
+				parseTerrain(node, object);
+			}
 		}
 	}
 }
@@ -247,6 +252,16 @@ void World::parseGraphicsComponent(tinyxml2::XMLNode* node, object::Object* obje
 	Renderable* renderable = new (mem) Renderable();
 	
 	object->getCoreComponents().setRenderable(renderable);
+	renderable->setOwner(object);
+}
+
+void World::parseTerrain(tinyxml2::XMLNode* node, object::Object* object)
+{
+	void* mem = system::System::allocAllignement(sizeof(Terrain), 16); // TODO: improve
+	Terrain* renderable = new (mem) Terrain();
+
+	object->getCoreComponents().setRenderable(renderable);
+	renderable->setOwner(object);
 }
 
 void World::gatherRenderable(World::Objects& renderableObjects, object::Object* root)

@@ -2,6 +2,7 @@
 #include "render/Renderer.hpp"
 #include "system/FileManager.hpp"
 #include "world/World.hpp"
+#include "system/Resources.h"
 
 #include <iostream>
 #include <new>
@@ -22,6 +23,7 @@ int main()
 
 	bool success = fileManager.init();
 	success &= system.init();
+	success &= rt::Resources::getInstance().init(system.getConfig());
 	success &= render.init(system.getConfig());
 	success &= world.init(system.getConfig());
 
@@ -41,6 +43,7 @@ int main()
 
 	world.deinit();
 	render.deinit();
+	rt::Resources::getInstance().deinit();
 	system.deinit();
 	fileManager.deinit();
 

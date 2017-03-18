@@ -23,17 +23,22 @@ namespace rt
 			void setWorld(world::World* world);
 
 		private:
+			void createRenderTargets();
+			void createDepthTarget();
+			void createDepthStencilState();
+			void createRasterizerState();
+			void setUpViewports();
+
+		private:
 			unsigned int m_windowsX;
 			unsigned int m_windowsY;
 
-			ID3D11Device* m_dx11Device = nullptr;
-			ID3D11DeviceContext* m_dx11Context = nullptr;
-			IDXGISwapChain* m_dx11swapChain = nullptr;
 			ID3D11RenderTargetView* m_dx11RenderTargetView = nullptr;
 			ID3D11DepthStencilView* m_dx11DepthStencilView = nullptr;
-			ID3D11Texture2D* m_depthStenciltex = nullptr;
-			ID3D11RasterizerState* m_rasterizedState = nullptr;
-			ID3D11RasterizerState* m_rasterizedStateWire = nullptr;
+			ID3D11RasterizerState* m_rasterState = nullptr;
+			ID3D11DepthStencilState* m_depthState = nullptr;
+
+			D3D11_VIEWPORT m_viewport;
 			world::World* m_world = nullptr;
 		};
 	}

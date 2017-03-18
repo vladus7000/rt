@@ -12,15 +12,10 @@ namespace rt
 {
 	struct RenderableContext
 	{
-		ID3D11Buffer* vertexBuffer;
-		ID3D11Buffer* indexBuffer;
-		ID3DX11Effect* dxEffect;
-		ID3D11InputLayout* inputLayout;
-		ID3D11ShaderResourceView* shaderRV;
-		D3D_PRIMITIVE_TOPOLOGY topology;
-		unsigned int stride;
-		unsigned int offset;
-		unsigned int indexCount;
+		XMMATRIX viewMatrix;
+		XMMATRIX viewProjectionMatrix;
+		XMMATRIX projectionMatrix;
+		XMMATRIX worldMatrix;
 
 		void clear();
 	};
@@ -32,9 +27,7 @@ namespace rt
 		virtual ~Renderable();
 
 		virtual void update(float delta) override;
-
-		void prepare(ID3D11Device* device);
-		bool fillContext(RenderableContext* context);
+		virtual void draw(RenderableContext* context);
 
 	private:
 		BBOX m_bbox;
