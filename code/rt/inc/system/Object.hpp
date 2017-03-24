@@ -6,22 +6,22 @@
 #include <string>
 
 #include "components/Components.hpp"
+#include "RefCounted.hpp"
 
 namespace rt
 {
 	namespace object
 	{
-		class Object
+		class Object : public RefCounted
 		{
 		public:
 			using Objects = std::vector<object::Object*>;
 			Object();
-			virtual ~Object();
-
+			
 			const Components& getCoreComponents() const { return m_coreComponents; }
 			Components& getCoreComponents() { return m_coreComponents; }
 
-			virtual void update(float delta);
+			virtual void update(float32 delta);
 
 			void addChild(Object* child);
 			void removeChild(Object* child);
@@ -34,6 +34,7 @@ namespace rt
 			const std::string& getName() const { return m_name; }
 
 		protected:
+			virtual ~Object();
 			Components m_coreComponents;
 			Objects m_childs;
 			Object* m_root = nullptr;

@@ -19,9 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="code\3paty\tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="code\3paty\tinyxml2\tinyxml2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="code\game\src\main.cpp" />
     <ClCompile Include="code\game\src\TeapotObject.cpp" />
+    <ClCompile Include="code\rt\src\system\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\code\3paty\;$(DXSDK_DIR)\Include;.\code\rt\inc;.\code\game\inc;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;.\code\rt\inc\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\code\3paty\;$(DXSDK_DIR)\Include;.\code\rt\inc;.\code\game\inc;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;.\code\rt\inc\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\code\3paty\;$(DXSDK_DIR)\Include;.\code\rt\inc;.\code\game\inc;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;.\code\rt\inc\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\code\3paty\;$(DXSDK_DIR)\Include;.\code\rt\inc;.\code\game\inc;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;.\code\rt\inc\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="code\rt\src\components\Components.cpp" />
     <ClCompile Include="code\rt\src\components\Renderable.cpp" />
     <ClCompile Include="code\rt\src\components\Transform.cpp" />
@@ -46,10 +61,14 @@
     <ClInclude Include="code\rt\inc\render\dxUtils.hpp" />
     <ClInclude Include="code\rt\inc\render\MeshContainer.hpp" />
     <ClInclude Include="code\rt\inc\render\Renderer.hpp" />
+    <ClInclude Include="code\rt\inc\system\Assertions.hpp" />
     <ClInclude Include="code\rt\inc\system\FileManager.hpp" />
     <ClInclude Include="code\rt\inc\system\Object.hpp" />
+    <ClInclude Include="code\rt\inc\system\RefCounted.hpp" />
     <ClInclude Include="code\rt\inc\system\Resources.h" />
+    <ClInclude Include="code\rt\inc\system\stdafx.h" />
     <ClInclude Include="code\rt\inc\system\System.hpp" />
+    <ClInclude Include="code\rt\inc\system\Types.hpp" />
     <ClInclude Include="code\rt\inc\utils\BBOX.hpp" />
     <ClInclude Include="code\rt\inc\world\Terrain.hpp" />
     <ClInclude Include="code\rt\inc\world\World.hpp" />
@@ -127,13 +146,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);RT_USE_REF_CHECKER</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\code\3paty\;$(DXSDK_DIR)\Include;.\code\rt\inc;.\code\game\inc;$(DXSDK_DIR)\Samples\C++\Effects11\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\code\3paty\;.\code\rt\inc;.\code\rt\inc\system\;.\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,9 +169,9 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);RT_USE_REF_CHECKER</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\code\3paty\;$(DXSDK_DIR)\Include;.\code\rt\inc;.\code\game\inc;$(DXSDK_DIR)\Samples\C++\Effects11\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\code\3paty\;.\code\rt\inc;.\code\rt\inc\system\;.\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -172,7 +190,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;.\code\3paty\;.\code\game\inc\;.\code\rt\inc\;./code/rt/inc/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\code\3paty\;.\code\rt\inc;.\code\rt\inc\system\;.\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -193,7 +211,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\code\3paty\;$(DXSDK_DIR)\Include;.\code\rt\inc;.\code\game\inc;$(DXSDK_DIR)\Samples\C++\Effects11\Inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\code\3paty\;.\code\rt\inc;.\code\rt\inc\system\;.\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

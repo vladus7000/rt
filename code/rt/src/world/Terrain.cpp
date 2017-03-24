@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "world/Terrain.hpp"
 
 namespace rt

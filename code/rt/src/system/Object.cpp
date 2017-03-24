@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "system/Object.hpp"
 #include "components/Transform.hpp"
 
@@ -15,11 +16,11 @@ Object::~Object()
 {
 	for (auto& it : m_childs)
 	{
-		delete it;
+		it->release();
 	}
 }
 
-void Object::update(float delta)
+void Object::update(float32 delta)
 {
 	m_coreComponents.update(delta);
 
@@ -37,6 +38,7 @@ void Object::addChild(Object* child)
 		if (foundIt == m_childs.end())
 		{
 			child->setRoot(this);
+			child->acquire();
 			m_childs.push_back(child);
 		}
 	}
@@ -51,6 +53,7 @@ void Object::removeChild(Object* child)
 		{
 			(*foundIt)->setRoot(nullptr);
 			m_childs.erase(foundIt);
+			child->release();
 		}
 	}
 }

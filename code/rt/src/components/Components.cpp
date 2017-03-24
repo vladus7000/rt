@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "components/Components.hpp"
 
 namespace rt

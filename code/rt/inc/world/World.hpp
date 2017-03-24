@@ -27,9 +27,12 @@ namespace rt
 			void update(float delta);
 
 			void addObject(object::Object* object);
+			void removeObject(object::Object* object);
+
 			const Objects& getObjects() { return m_objects; }
 
 			const Objects& getRenderableObjects();
+			void cleanRenderables();
 
 			const XMMATRIX& getViewMatrix() { return m_camera.getView(); }
 			const XMMATRIX& getViewProjectionMatrix() { return m_camera.getViewProjection(); }

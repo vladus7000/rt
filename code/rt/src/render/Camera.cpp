@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "render/Camera.hpp"
 
 namespace rt

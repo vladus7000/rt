@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "system/FileManager.hpp"
 #include <fstream>
 

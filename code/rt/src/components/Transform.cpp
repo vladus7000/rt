@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "components/Transform.hpp"
 #include "system/Object.hpp"
 

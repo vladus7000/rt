@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "system/System.hpp"
 #include "tinyxml2/tinyxml2.h"
 #include "system/FileManager.hpp"
@@ -146,7 +147,7 @@ void System::deinit()
 	m_running = false;
 }
 
-bool System::update(float delta)
+bool System::update(float32 delta)
 {
 	MSG msg;
 	while (PeekMessage(&msg, m_config->hwnd, NULL, NULL, PM_REMOVE))

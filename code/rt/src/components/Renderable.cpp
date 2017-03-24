@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "components/Renderable.hpp"
 #include <xnamath.h>
 #include "teapot.h"

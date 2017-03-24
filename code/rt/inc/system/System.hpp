@@ -10,6 +10,7 @@ void* operator new[](size_t size);
 
 void operator delete (void* ptr);
 void operator delete[](void* ptr);
+
 namespace tinyxml2
 {
 	class XMLNode;
@@ -22,12 +23,12 @@ namespace rt
 
 		struct Config
 		{
-			unsigned int windowSizeX;
-			unsigned int windowSizeY;
+			uint32 windowSizeX;
+			uint32 windowSizeY;
 			std::string windowsName;
 			std::string rootFolder;
 			std::string sceneFile;
-			unsigned int fixedFrameRate;
+			uint32 fixedFrameRate;
 
 			HWND hwnd;
 		};
@@ -43,7 +44,7 @@ namespace rt
 
 			bool init();
 			void deinit();
-			bool update(float delta);
+			bool update(float32 delta);
 
 			ConfigRef getConfig();
 

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "system/Resources.h"
 #include "render/dxUtils.hpp"
 
@@ -71,9 +72,9 @@ void Resources::deinit()
 	ReleaseCOM(m_dx11Device);
 }
 
-unsigned int Resources::checkMultisampleQuality(DXGI_FORMAT format, unsigned int samplesCount)
+unsigned int Resources::checkMultisampleQuality(DXGI_FORMAT format, uint32 samplesCount)
 {
-	unsigned int quality = 0;
+	uint32 quality = 0;
 	m_dx11Device->CheckMultisampleQualityLevels(format, samplesCount, &quality);
 	return quality;
 }

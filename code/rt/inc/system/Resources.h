@@ -17,7 +17,7 @@ namespace rt
 		ID3D11Device* getDxDevice() { return m_dx11Device; }
 		ID3D11DeviceContext* getContext() { return m_dx11Context; }
 		IDXGISwapChain* getSwapChain() { return m_dx11swapChain; }
-		unsigned int checkMultisampleQuality(DXGI_FORMAT format, unsigned int samplesCount);
+		uint32 checkMultisampleQuality(DXGI_FORMAT format, uint32 samplesCount);
 	private:
 		Resources();
 		~Resources();

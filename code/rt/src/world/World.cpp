@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "world/World.hpp"
 #include "tinyxml2/tinyxml2.h"
 #include "system/FileManager.hpp"
@@ -5,6 +6,7 @@
 #include "components/Renderable.hpp"
 #include "components/Transform.hpp"
 #include "world/Terrain.hpp"
+#include <algorithm>
 
 namespace rt
 {
@@ -36,7 +38,7 @@ bool World::init(system::ConfigRef config)
 			{
 				if (tinyxml2::XMLNode* cameraNode = root->FirstChildElement("camera"))
 				{
-					initCamera(cameraNode, static_cast<float>(config->windowSizeX) / static_cast<float>(config->windowSizeY));
+					initCamera(cameraNode, static_cast<float32>(config->windowSizeX) / static_cast<float32>(config->windowSizeY));
 				}
 
 				if (tinyxml2::XMLNode* scene = root->FirstChildElement("objects"))
@@ -59,9 +61,11 @@ bool World::init(system::ConfigRef config)
 
 void World::deinit()
 {
+	cleanRenderables();
+
 	for (auto& it : m_objects)
 	{
-		delete it;
+		it->release();
 	}
 	m_objects.clear();
 }
@@ -81,13 +85,28 @@ void World::addObject(object::Object* object)
 {
 	if (object)
 	{
+		object->acquire();
 		m_objects.push_back(object);
+	}
+}
+
+void World::removeObject(object::Object* object)
+{
+	auto foundIT = std::find_if(m_objects.begin(), m_objects.end(), [=](object::Object* o)
+	{
+		return o == object;
+	});
+
+	if (foundIT != m_objects.end())
+	{
+		m_objects.erase(foundIT);
+		object->release();
 	}
 }
 
 const World::Objects& World::getRenderableObjects()
 {
-	m_renderableObjects.clear();
+	cleanRenderables();
 
 	for (auto& it : m_objects)
 	{
@@ -97,23 +116,33 @@ const World::Objects& World::getRenderableObjects()
 	return m_renderableObjects;
 }
 
+void World::cleanRenderables()
+{
+	for (auto& it : m_renderableObjects)
+	{
+		it->release();
+	}
+
+	m_renderableObjects.clear();
+}
+
 void World::initCamera(tinyxml2::XMLNode* node, float aspectRatio)
 {
-	float px = 0.0f;
-	float py = 0.0f;
-	float pz = 0.0f;
-
-	float tx = 0.0f;
-	float ty = 0.0f;
-	float tz = 0.0f;
-
-	float ux = 0.0f;
-	float uy = 0.0f;
-	float uz = 0.0f;
-
-	float fov = 0.0f;
-	float nearZ = 0.0f;
-	float farZ = 0.0f;
+	float32 px = 0.0f;
+	float32 py = 0.0f;
+	float32 pz = 0.0f;
+		 
+	float32 tx = 0.0f;
+	float32 ty = 0.0f;
+	float32 tz = 0.0f;
+		 
+	float32 ux = 0.0f;
+	float32 uy = 0.0f;
+	float32 uz = 0.0f;
+		 
+	float32 fov = 0.0f;
+	float32 nearZ = 0.0f;
+	float32 farZ = 0.0f;
 
 	if (tinyxml2::XMLElement* position = node->FirstChildElement("position"))
 	{
@@ -164,9 +193,11 @@ void World::parseObjects(tinyxml2::XMLNode* child, object::Object* root)
 		}
 		else
 		{
-			m_objects.push_back(object);
+			addObject(object);
 		}
-	
+
+		object->release();
+
 		parseObjects(child->FirstChildElement("object"), object);
 	}
 }
@@ -273,6 +304,7 @@ void World::gatherRenderable(World::Objects& renderableObjects, object::Object* 
 
 	if (root->getCoreComponents().getRenderable())
 	{
+		root->acquire();
 		renderableObjects.push_back(root);
 	}
 

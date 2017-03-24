@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "system/System.hpp"
 #include "render/Renderer.hpp"
 #include "system/FileManager.hpp"

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "render/Renderer.hpp"
 #include "system/Resources.h"
 #include "components/Renderable.hpp"
@@ -61,6 +62,7 @@ void Renderer::renderFrame()
 
 		if (m_world)
 		{
+			//first draw opaque geometry
 			RenderableContext context;
 			context.clear();
 
@@ -76,6 +78,8 @@ void Renderer::renderFrame()
 				
 				renderable->draw(&context);
 			}
+			//second transparent
+			//everething else  
 		}
 
 		auto swapChain = Resources::getInstance().getSwapChain();
