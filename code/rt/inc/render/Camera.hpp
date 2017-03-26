@@ -22,9 +22,12 @@ namespace rt
 		void setPosition() {} // TODO: implement;
 		void setRotation() {} // TODO: implement;
 
+		uint64 getUID() const { return m_cameraUID; }
+
 	private:
 		XMMATRIX m_projection;
 		XMMATRIX m_view;
 		XMMATRIX m_viewProjection;
+		const uint64 m_cameraUID;
 	};
 }

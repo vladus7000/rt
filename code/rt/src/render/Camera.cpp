@@ -4,7 +4,13 @@
 namespace rt
 {
 
+namespace
+{
+	uint64 g_cameraUIDS = 0;
+}
+
 Camera::Camera()
+	: m_cameraUID(g_cameraUIDS++)
 {
 
 }
