@@ -1,8 +1,5 @@
-cbuffer globalMatrixs
-{
-	float4x4 projection;
-	float4x4 viwewProjection;
-};
+#include "globals.inl"
+#include "gbuffer.inl"
 
 struct Vertex
 {
@@ -22,9 +19,15 @@ VertexOut VS(Vertex inVertex)
 	return v;
 }
 
-float4 PS(VertexOut inVertex) : SV_Target
+gbufferOut PS(VertexOut inVertex)
 {
-	return float4(0.5, 0.5, 0.5, 1.0);
+	gbufferOut pixelout;
+
+	pixelout.diffuse_tu = float4(0.5, 0.5, 1.0, 0.0);
+	pixelout.normal_tv = float4(0.0, 0.0, 0.0, 0.0);
+	pixelout.aux = float4(0.0, 0.0, 0.0, 0.0);
+
+	return pixelout;
 }
 
 technique11 Terrain

@@ -1,3 +1,5 @@
+#include "gbuffer.inl"
+
 cbuffer cbMatrix
 {
 	float4x4 ViewProj;
@@ -7,13 +9,6 @@ cbuffer cbMatrix
 };
 
 Texture2D tex : register(t0);
-
-SamplerState TextureSampler
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
 
 struct VertexIn
 {
@@ -80,25 +75,24 @@ void GS(triangle VertexOut vertIn[3], uint primitive : SV_PrimitiveID, inout Tri
 	for (int i = 0; i < 3; i++)
 	{
 		outpoint.PosH   = mul(float4(vertIn[i].PosL, 1.0f), mvp);
-		outpoint.TCoord = mul(float4(vertIn[i].TCoord, 0.0, 1.0f), TextureM).xy;
+		outpoint.TCoord = vertIn[i].TCoord;//mul(float4(vertIn[i].TCoord, 0.0, 1.0f), TextureM).xy;
 		outpoint.normal = mul(float4(vertIn[i].normal, 0.0f), WorldN).xyz;
 
 		triStream.Append(outpoint);
 	}
 }
 
-float4 PS(GeometryOut pin) : SV_Target
+gbufferOut PS(GeometryOut pin)
 {
 	float3 n = normalize(pin.normal);
-
-	if (pin.color)
-	{
-		return tex.Sample(TextureSampler, pin.TCoord) * max( 0.0, dot(-n, float3(-0.5,-0.5,0.5))) + float4(0.08, 0.08, 0.08, 0);
-	}
-	else
-	{
-		return float4(0.3, 0.0, 0.0, 1.0);
-	}
+	gbufferOut pixelout;
+	pixelout.diffuse_tu = float4(0.0, 0.0, 0.0, 0.0);
+	pixelout.normal_tv = float4(0.0, 0.0, 0.0, 0.0);
+	pixelout.aux = float4(0.0, 0.0, 0.0, 0.0);
+	
+	pixelout.diffuse_tu = tex.Sample(TextureSampler, pin.TCoord);// * max( 0.0, dot(-n, float3(-0.5,-0.5,0.5))) + float4(0.08, 0.08, 0.08, 0);
+	
+	return pixelout;
 }
 
 QuadVertexOut QuadVS(QuadVertexIn vin)

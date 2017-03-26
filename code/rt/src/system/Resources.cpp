@@ -34,7 +34,7 @@ bool Resources::init(system::ConfigRef config)
 
 	ZeroMemory(&swapChain, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	swapChain.SampleDesc.Count = 4;
+	swapChain.SampleDesc.Count = 1;
 	swapChain.SampleDesc.Quality = 0;
 	swapChain.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChain.BufferDesc.Width = m_windowsX;

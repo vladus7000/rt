@@ -160,7 +160,7 @@ void Terrain::initShader()
 		std::cout << error << std::endl;
 		ReleaseCOM(compilerMsg);
 	}
-	else
+	if (compiledShader)
 	{
 		D3DX11CreateEffectFromMemory(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), 0, device, &m_dxEffect);
 		ReleaseCOM(compiledShader);
