@@ -28,14 +28,15 @@ bool Resources::init(system::ConfigRef config)
 	int m_windowsY = config->windowSizeY;
 
 	D3D_FEATURE_LEVEL featureLevel;
-	HRESULT res = D3D11CreateDevice(0, D3D_DRIVER_TYPE_HARDWARE, 0, 0, 0, 0, D3D11_SDK_VERSION, &m_dx11Device, &featureLevel, &m_dx11Context);
+	UINT flags = 0;// D3D11_CREATE_DEVICE_DEBUG;
+	HRESULT res = D3D11CreateDevice(0, D3D_DRIVER_TYPE_HARDWARE, 0, flags, 0, 0, D3D11_SDK_VERSION, &m_dx11Device, &featureLevel, &m_dx11Context);
 
 	DXGI_SWAP_CHAIN_DESC swapChain;
 
 	ZeroMemory(&swapChain, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	swapChain.SampleDesc.Count = 1;
-	swapChain.SampleDesc.Quality = 0;
+	swapChain.SampleDesc.Count = config->msaaQualityCount;
+	swapChain.SampleDesc.Quality = config->msaaQuality;
 	swapChain.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChain.BufferDesc.Width = m_windowsX;
 	swapChain.BufferDesc.Height = m_windowsY;

@@ -41,6 +41,8 @@ namespace rt
 		private:
 			uint32 m_windowsX;
 			uint32 m_windowsY;
+			uint32 m_msaaQualityCount;
+			uint32 m_msaaQuality;
 			static const uint32 m_gbufferCount = 3;
 
 			ID3D11RenderTargetView* m_dx11RenderTargetView = nullptr;

@@ -35,9 +35,11 @@ namespace
 {
 	static const char* SettingsFile = "/configs/settings.xml";
 
-	static const unsigned int DefaultWidth = 800;
-	static const unsigned int DefaultHeight = 600;
-	static const unsigned int DefaultRefreshRate = 60;
+	static const uint32 DefaultWidth = 800;
+	static const uint32 DefaultHeight = 600;
+	static const uint32 DefaultRefreshRate = 60;
+	static const uint32 DefaultMSAAQualityCount = 4;
+	static const uint32 DefaultMSAAQuality = 1;
 	static const char* DefaultWindowName = "RenderTest";
 
 	static const char* graphicsElementName = "graphics";
@@ -71,6 +73,8 @@ System::System()
 	m_config->windowSizeY = DefaultHeight;
 	m_config->windowsName = DefaultWindowName;
 	m_config->fixedFrameRate = DefaultRefreshRate;
+	m_config->msaaQualityCount = DefaultMSAAQualityCount;
+	m_config->msaaQuality = DefaultMSAAQuality;
 
 	if (configFile->valid)
 	{

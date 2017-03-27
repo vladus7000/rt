@@ -29,6 +29,8 @@ namespace rt
 			std::string rootFolder;
 			std::string sceneFile;
 			uint32 fixedFrameRate;
+			uint32 msaaQualityCount;
+			uint32 msaaQuality;
 
 			HWND hwnd;
 		};

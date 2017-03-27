@@ -15,6 +15,8 @@ namespace render
 {
 
 Renderer::Renderer()
+	: m_msaaQualityCount(0)
+	, m_msaaQuality(0)
 {
 }
 
@@ -27,6 +29,8 @@ bool Renderer::init(system::ConfigRef config)
 {
 	m_windowsX = config->windowSizeX;
 	m_windowsY = config->windowSizeY;
+	m_msaaQualityCount = config->msaaQualityCount;
+	m_msaaQuality = config->msaaQuality;
 
 	for (uint32 i = 0; i < m_gbufferCount; i++)
 	{
@@ -137,8 +141,8 @@ void Renderer::createRenderTargets()
 	desc.Height = m_windowsY;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
+	desc.SampleDesc.Count = m_msaaQualityCount;
+	desc.SampleDesc.Quality = m_msaaQuality;
 	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
@@ -147,12 +151,12 @@ void Renderer::createRenderTargets()
 
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	renderTargetViewDesc.Format = desc.Format;
-	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DMS;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	srvDesc.Format = desc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
 
@@ -173,8 +177,8 @@ void Renderer::createDepthTarget()
 	depthStencilDesc.Height = m_windowsY;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.ArraySize = 1;
-	depthStencilDesc.SampleDesc.Count = 1;
-	depthStencilDesc.SampleDesc.Quality = 0;
+	depthStencilDesc.SampleDesc.Count = m_msaaQualityCount;
+	depthStencilDesc.SampleDesc.Quality = m_msaaQuality;
 	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -315,7 +319,7 @@ void Renderer::initLightShader()
 		std::cout << error << std::endl;
 		ReleaseCOM(compilerMsg);
 	}
-	else
+	if (compiledShader)
 	{
 		D3DX11CreateEffectFromMemory(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), 0, device, &m_lightEffect);
 		ReleaseCOM(compiledShader);
