@@ -15,9 +15,17 @@ namespace rt
 		class Object : public RefCounted
 		{
 		public:
+			enum class Type
+			{
+				Light,
+				Typeless
+			};
+
 			using Objects = std::vector<object::Object*>;
 			Object();
-			
+
+			Type getType() const { return m_ObjectType; }
+
 			const Components& getCoreComponents() const { return m_coreComponents; }
 			Components& getCoreComponents() { return m_coreComponents; }
 
@@ -39,6 +47,7 @@ namespace rt
 			Objects m_childs;
 			Object* m_root = nullptr;
 			std::string m_name = "dummy";
+			Type m_ObjectType;
 		};
 	}
 }

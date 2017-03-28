@@ -92,8 +92,8 @@ void Renderer::renderFrame()
 			context.viewMatrix = mainCamera.getView();
 			context.viewProjectionMatrix = mainCamera.getViewProjection();
 
-			auto& visibleObjects = m_world->getRenderableObjects(mainCamera.getUID());
-			for (const auto& it : visibleObjects)
+			auto& visibleObjects = m_world->getVisibleItems(mainCamera.getUID());
+			for (const auto& it : visibleObjects.objects)
 			{
 				auto renderable =  static_cast<Renderable*>(it->getCoreComponents().getRenderable());
 				auto transform = static_cast<Transform*>(it->getCoreComponents().getTransform());
@@ -173,24 +173,7 @@ void Renderer::createRenderTargets()
 
 void Renderer::createDepthTarget()
 {
-	D3D11_TEXTURE2D_DESC depthStencilDesc;
-	depthStencilDesc.Width = m_windowsX;
-	depthStencilDesc.Height = m_windowsY;
-	depthStencilDesc.MipLevels = 1;
-	depthStencilDesc.ArraySize = 1;
-	depthStencilDesc.SampleDesc.Count = m_msaaQualityCount;
-	depthStencilDesc.SampleDesc.Quality = m_msaaQuality;
-	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	depthStencilDesc.CPUAccessFlags = 0;
-	depthStencilDesc.MiscFlags = 0;
-
-	auto dxDevice = Resources::getInstance().getDxDevice();
-	ID3D11Texture2D* depthTexture = nullptr;
-	dxDevice->CreateTexture2D(&depthStencilDesc, 0, &depthTexture);
-	dxDevice->CreateDepthStencilView(depthTexture, 0, &m_dx11DepthStencilView);
-	ReleaseCOM(depthTexture);
+	m_dx11DepthStencilView = Resources::getInstance().createDepthBuffer();
 }
 
 void Renderer::createDepthStencilState()

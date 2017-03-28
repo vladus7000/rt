@@ -4,6 +4,7 @@
 #include "system/System.hpp"
 #include "system/Object.hpp"
 #include "render/Camera.hpp"
+#include "render/Light.hpp"
 
 namespace tinyxml2
 {
@@ -14,6 +15,12 @@ namespace rt
 {
 	namespace world
 	{
+		struct VisibleItems
+		{
+			std::vector<object::Object*> objects;
+			std::vector<Light*> lights;
+		};
+
 		class World
 		{
 		public:
@@ -31,8 +38,9 @@ namespace rt
 
 			const Objects& getObjects() { return m_objects; }
 
-			const Objects& getRenderableObjects(uint64 cameraID = 0);
-			void cleanRenderables();
+			VisibleItems& getVisibleItems(uint64 cameraID = 0);
+			//const Objects& getRenderableObjects(uint64 cameraID = 0);
+			void cleanVisibleItems();
 
 			const Camera& getMainCamera() const { return m_camera; }
 			Camera& getMainCamera() { return m_camera; }
@@ -44,10 +52,10 @@ namespace rt
 			void parseTransformComponent(tinyxml2::XMLNode* node, object::Object* object);
 			void parseGraphicsComponent(tinyxml2::XMLNode* node, object::Object* object);
 			void parseTerrain(tinyxml2::XMLNode* node, object::Object* object);
-			void gatherRenderable(Objects& renderableObjects, object::Object* root);
+			void gatherVisibleObjects(VisibleItems& container, object::Object* root);
 		private:
 			Objects m_objects;
-			Objects m_renderableObjects;
+			VisibleItems m_visibleItems;
 			Camera m_camera;
 		};
 	}

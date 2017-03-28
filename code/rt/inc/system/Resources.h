@@ -14,10 +14,12 @@ namespace rt
 		bool init(system::ConfigRef config);
 		void deinit();
 
+		system::ConfigRef getConfig() { return m_config; }
 		ID3D11Device* getDxDevice() { return m_dx11Device; }
 		ID3D11DeviceContext* getContext() { return m_dx11Context; }
 		IDXGISwapChain* getSwapChain() { return m_dx11swapChain; }
 		uint32 checkMultisampleQuality(DXGI_FORMAT format, uint32 samplesCount);
+		ID3D11DepthStencilView* createDepthBuffer();
 	private:
 		Resources();
 		~Resources();
@@ -26,5 +28,6 @@ namespace rt
 		IDXGISwapChain* m_dx11swapChain = nullptr;
 		ID3D11Device* m_dx11Device = nullptr;
 		ID3D11DeviceContext* m_dx11Context = nullptr;
+		system::ConfigRef m_config;
 	};
 }

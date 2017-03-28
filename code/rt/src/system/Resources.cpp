@@ -24,6 +24,8 @@ Resources& Resources::getInstance()
 
 bool Resources::init(system::ConfigRef config)
 {
+	m_config = config;
+
 	int m_windowsX = config->windowSizeX;
 	int m_windowsY = config->windowSizeY;
 
@@ -78,6 +80,30 @@ unsigned int Resources::checkMultisampleQuality(DXGI_FORMAT format, uint32 sampl
 	uint32 quality = 0;
 	m_dx11Device->CheckMultisampleQualityLevels(format, samplesCount, &quality);
 	return quality;
+}
+
+ID3D11DepthStencilView * Resources::createDepthBuffer()
+{
+	D3D11_TEXTURE2D_DESC depthStencilDesc;
+	depthStencilDesc.Width = m_config->windowSizeX;;
+	depthStencilDesc.Height = m_config->windowSizeY;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.SampleDesc.Count = m_config->msaaQualityCount;
+	depthStencilDesc.SampleDesc.Quality = m_config->msaaQuality;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.MiscFlags = 0;
+
+	ID3D11Texture2D* depthTexture = nullptr;
+	m_dx11Device->CreateTexture2D(&depthStencilDesc, 0, &depthTexture);
+
+	ID3D11DepthStencilView* depthView = nullptr;
+	m_dx11Device->CreateDepthStencilView(depthTexture, 0, &depthView);
+	ReleaseCOM(depthTexture);
+	return depthView;
 }
 
 }

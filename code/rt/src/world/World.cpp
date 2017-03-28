@@ -59,9 +59,14 @@ bool World::init(system::ConfigRef config)
 	return true;
 }
 
+void clean(object::Object* o)
+{
+
+}
+
 void World::deinit()
 {
-	cleanRenderables();
+	cleanVisibleItems();
 
 	for (auto& it : m_objects)
 	{
@@ -104,26 +109,31 @@ void World::removeObject(object::Object* object)
 	}
 }
 
-const World::Objects& World::getRenderableObjects(uint64 cameraID)
+VisibleItems& World::getVisibleItems(uint64 cameraID)
 {
-	cleanRenderables();
+	cleanVisibleItems();
 
 	for (auto& it : m_objects)
 	{
-		gatherRenderable(m_renderableObjects, it);
+		gatherVisibleObjects(m_visibleItems, it);
 	}
 
-	return m_renderableObjects;
+	return m_visibleItems;
 }
 
-void World::cleanRenderables()
+void World::cleanVisibleItems()
 {
-	for (auto& it : m_renderableObjects)
+	for (auto& it : m_visibleItems.objects)
+	{
+		it->release();
+	}
+	for (auto& it : m_visibleItems.lights)
 	{
 		it->release();
 	}
 
-	m_renderableObjects.clear();
+	m_visibleItems.objects.clear();
+	m_visibleItems.lights.clear();
 }
 
 void World::initCamera(tinyxml2::XMLNode* node, float aspectRatio)
@@ -295,7 +305,7 @@ void World::parseTerrain(tinyxml2::XMLNode* node, object::Object* object)
 	renderable->setOwner(object);
 }
 
-void World::gatherRenderable(World::Objects& renderableObjects, object::Object* root)
+void World::gatherVisibleObjects(VisibleItems& container, object::Object* root)
 {
 	if (!root)
 	{
@@ -305,12 +315,18 @@ void World::gatherRenderable(World::Objects& renderableObjects, object::Object* 
 	if (root->getCoreComponents().getRenderable())
 	{
 		root->acquire();
-		renderableObjects.push_back(root);
+		container.objects.push_back(root);
+	}
+
+	if (root->getType() == object::Object::Type::Light)
+	{
+		root->acquire();
+		container.lights.push_back(static_cast<Light*>(root));
 	}
 
 	for (auto& it : root->getChilds())
 	{
-		gatherRenderable(renderableObjects, it);
+		gatherVisibleObjects(container, it);
 	}
 }
 

@@ -8,6 +8,7 @@ namespace object
 {
 
 Object::Object()
+	: m_ObjectType(Type::Typeless)
 {
 
 }
