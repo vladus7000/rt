@@ -104,7 +104,7 @@ void World::removeObject(object::Object* object)
 	}
 }
 
-const World::Objects& World::getRenderableObjects()
+const World::Objects& World::getRenderableObjects(uint64 cameraID)
 {
 	cleanRenderables();
 

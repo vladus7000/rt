@@ -87,12 +87,13 @@ void Renderer::renderFrame()
 			//first draw opaque geometry to gbuffer
 			RenderableContext context;
 			context.clear();
+			auto& mainCamera = m_world->getMainCamera();
+			context.projectionMatrix = mainCamera.getProjection();
+			context.viewMatrix = mainCamera.getView();
+			context.viewProjectionMatrix = mainCamera.getViewProjection();
 
-			context.projectionMatrix = m_world->getProjectionMatrix();
-			context.viewMatrix = m_world->getViewMatrix();
-			context.viewProjectionMatrix = m_world->getViewProjectionMatrix();
-
-			for (const auto& it : m_world->getRenderableObjects())
+			auto& visibleObjects = m_world->getRenderableObjects(mainCamera.getUID());
+			for (const auto& it : visibleObjects)
 			{
 				auto renderable =  static_cast<Renderable*>(it->getCoreComponents().getRenderable());
 				auto transform = static_cast<Transform*>(it->getCoreComponents().getTransform());

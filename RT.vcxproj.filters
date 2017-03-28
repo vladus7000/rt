@@ -63,6 +63,9 @@
     <ClCompile Include="code\rt\src\system\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="code\rt\src\render\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\3paty\tinyxml2\tinyxml2.h">
@@ -126,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="code\rt\inc\system\RefCounted.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="code\rt\inc\render\Light.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

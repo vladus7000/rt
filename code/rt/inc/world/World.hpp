@@ -31,12 +31,11 @@ namespace rt
 
 			const Objects& getObjects() { return m_objects; }
 
-			const Objects& getRenderableObjects();
+			const Objects& getRenderableObjects(uint64 cameraID = 0);
 			void cleanRenderables();
 
-			const XMMATRIX& getViewMatrix() { return m_camera.getView(); }
-			const XMMATRIX& getViewProjectionMatrix() { return m_camera.getViewProjection(); }
-			const XMMATRIX& getProjectionMatrix() { return m_camera.getProjection(); }
+			const Camera& getMainCamera() const { return m_camera; }
+			Camera& getMainCamera() { return m_camera; }
 
 		private:
 			void initCamera(tinyxml2::XMLNode* node, float aspectRatio);
