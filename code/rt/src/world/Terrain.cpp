@@ -15,7 +15,7 @@ Terrain::Terrain()
 	, m_inputLayout(nullptr)
 	, m_indicesCount(0)
 {
-	initGrid(10.0f, 10.0f, 50, 50);
+	initGrid(20.0f, 10.0f, 100, 50);
 	initShader();
 }
 
@@ -42,7 +42,14 @@ void Terrain::draw(RenderableContext* context)
 	dxContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
 
 	ID3DX11EffectTechnique* tech;
-	tech = m_dxEffect->GetTechniqueByName("Terrain");
+	if (!context->depthOnly)
+	{
+		tech = m_dxEffect->GetTechniqueByName("Terrain");
+	}
+	else
+	{
+		tech = m_dxEffect->GetTechniqueByName("DepthOnly");
+	}
 	D3DX11_TECHNIQUE_DESC desc;
 	tech->GetDesc(&desc);
 
@@ -50,6 +57,10 @@ void Terrain::draw(RenderableContext* context)
 	fxViewProj = m_dxEffect->GetVariableByName("viwewProjection")->AsMatrix();
 
 	fxViewProj->SetMatrix((float*)&context->viewProjectionMatrix);
+
+	ID3DX11EffectMatrixVariable* fxTextureM = nullptr;
+	fxTextureM = m_dxEffect->GetVariableByName("lightMatrix")->AsMatrix();
+	fxTextureM->SetMatrix((float*)&context->lightMatrix);
 
 	for (unsigned int i = 0; i < desc.Passes; i++)
 	{

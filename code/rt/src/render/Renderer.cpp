@@ -4,6 +4,7 @@
 #include "components/Renderable.hpp"
 #include "components/Transform.hpp"
 #include "render/dxUtils.hpp"
+#include "render/Light.hpp"
 #include <d3dx11async.h>
 
 #include <string>
@@ -74,10 +75,6 @@ void Renderer::renderFrame()
 	{
 		auto dx11Context = Resources::getInstance().getContext();
 
-		bindGbuffer();
-		clearGbuffer();
-		dx11Context->ClearDepthStencilView(m_dx11DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
 		dx11Context->OMSetDepthStencilState(m_depthState, 1);
 		dx11Context->RSSetState(m_rasterState);
 		dx11Context->RSSetViewports(1, &m_viewport);
@@ -87,12 +84,48 @@ void Renderer::renderFrame()
 			//first draw opaque geometry to gbuffer
 			RenderableContext context;
 			context.clear();
+
+			//
+			context.depthOnly = true;
 			auto& mainCamera = m_world->getMainCamera();
+			auto& visibleObjects = m_world->getVisibleItems(mainCamera.getUID());
+
+			for (const auto& light : visibleObjects.lights)
+			{
+				if (!light->isCastShadow())
+				{
+					continue;
+				}
+
+				auto depthView = light->getDepth();
+				dx11Context->ClearDepthStencilView(depthView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+				dx11Context->OMSetRenderTargets(0, nullptr, depthView);
+
+				context.projectionMatrix = light->getCamera().getProjection();
+				context.viewMatrix = light->getCamera().getView();
+				context.viewProjectionMatrix = light->getCamera().getViewProjection();
+
+				for (const auto& it : visibleObjects.objects)
+				{
+					auto renderable = static_cast<Renderable*>(it->getCoreComponents().getRenderable());
+					auto transform = static_cast<Transform*>(it->getCoreComponents().getTransform());
+					context.worldMatrix = transform->getWorldTransform(it);
+
+					renderable->draw(&context);
+				}
+			}
+			//
+			bindGbuffer();
+			clearGbuffer();
+			dx11Context->ClearDepthStencilView(m_dx11DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+			context.clear();
+			
 			context.projectionMatrix = mainCamera.getProjection();
 			context.viewMatrix = mainCamera.getView();
 			context.viewProjectionMatrix = mainCamera.getViewProjection();
 
-			auto& visibleObjects = m_world->getVisibleItems(mainCamera.getUID());
+			context.lightMatrix = visibleObjects.lights[0]->getCamera().getViewProjection();
 			for (const auto& it : visibleObjects.objects)
 			{
 				auto renderable =  static_cast<Renderable*>(it->getCoreComponents().getRenderable());
@@ -101,12 +134,12 @@ void Renderer::renderFrame()
 				
 				renderable->draw(&context);
 			}
-
+			
 			dx11Context->ClearDepthStencilView(m_dx11DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 			bindScreenRenderTarget();
 			clearScreenRenderTarget();
-			shadeGBuffer();
+			shadeGBuffer(visibleObjects);
 
 			//second transparent
 			//everething else  
@@ -142,8 +175,17 @@ void Renderer::createRenderTargets()
 	desc.Height = m_windowsY;
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
-	desc.SampleDesc.Count = m_msaaQualityCount;
-	desc.SampleDesc.Quality = m_msaaQuality;
+	if (m_msaaQualityCount > 1)
+	{
+		desc.SampleDesc.Count = m_msaaQualityCount;
+		desc.SampleDesc.Quality = m_msaaQuality;
+	}
+	else
+	{
+		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Quality = 0;
+
+	}
 	desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
@@ -152,12 +194,12 @@ void Renderer::createRenderTargets()
 
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	renderTargetViewDesc.Format = desc.Format;
-	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DMS;
+	renderTargetViewDesc.ViewDimension = m_msaaQualityCount > 1 ? D3D11_RTV_DIMENSION_TEXTURE2DMS : D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	srvDesc.Format = desc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
+	srvDesc.ViewDimension = m_msaaQualityCount > 1 ? D3D11_SRV_DIMENSION_TEXTURE2DMS : D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
 
@@ -250,7 +292,7 @@ void Renderer::clearGbuffer()
 	}
 }
 
-void Renderer::shadeGBuffer()
+void Renderer::shadeGBuffer(world::VisibleItems& items)
 {
 	uint32 stride = sizeof(float32) * 2;
 	uint32 offset = 0;
@@ -268,6 +310,8 @@ void Renderer::shadeGBuffer()
 	ID3DX11EffectShaderResourceVariable* gbuffer0 = nullptr;
 	ID3DX11EffectShaderResourceVariable* gbuffer1 = nullptr;
 	ID3DX11EffectShaderResourceVariable* gbuffer2 = nullptr;
+	ID3DX11EffectShaderResourceVariable* depth = nullptr;
+	ID3DX11EffectMatrixVariable* lightMatrix = nullptr;
 
 	gbuffer0 = m_lightEffect->GetVariableByName("diffuse_tu")->AsShaderResource();
 	gbuffer0->SetResource(m_gbufferSRV[0]);
@@ -278,6 +322,12 @@ void Renderer::shadeGBuffer()
 	gbuffer2 = m_lightEffect->GetVariableByName("aux")->AsShaderResource();
 	gbuffer2->SetResource(m_gbufferSRV[2]);
 
+	depth = m_lightEffect->GetVariableByName("depth")->AsShaderResource();
+	depth->SetResource(items.lights[0]->getDepthSRV());
+
+	lightMatrix = m_lightEffect->GetVariableByName("lightMatrix")->AsMatrix();
+	lightMatrix->SetMatrix((float*)&items.lights[0]->getCamera().getViewProjection());
+	
 	for (unsigned int i = 0; i < desc.Passes; i++)
 	{
 		dxContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

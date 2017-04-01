@@ -37,8 +37,16 @@ bool Resources::init(system::ConfigRef config)
 
 	ZeroMemory(&swapChain, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	swapChain.SampleDesc.Count = config->msaaQualityCount;
-	swapChain.SampleDesc.Quality = config->msaaQuality;
+	if (config->msaaQualityCount > 1)
+	{
+		swapChain.SampleDesc.Count = config->msaaQualityCount;
+		swapChain.SampleDesc.Quality = config->msaaQuality;
+	}
+	else
+	{
+		swapChain.SampleDesc.Count = 1;
+		swapChain.SampleDesc.Quality = 0;
+	}
 	swapChain.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChain.BufferDesc.Width = m_windowsX;
 	swapChain.BufferDesc.Height = m_windowsY;
@@ -89,9 +97,18 @@ ID3D11DepthStencilView * Resources::createDepthBuffer()
 	depthStencilDesc.Height = m_config->windowSizeY;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.ArraySize = 1;
-	depthStencilDesc.SampleDesc.Count = m_config->msaaQualityCount;
-	depthStencilDesc.SampleDesc.Quality = m_config->msaaQuality;
-	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	
+	if (m_config->msaaQualityCount > 1)
+	{
+		depthStencilDesc.SampleDesc.Count = m_config->msaaQualityCount;
+		depthStencilDesc.SampleDesc.Quality = m_config->msaaQuality;
+	}
+	else
+	{
+		depthStencilDesc.SampleDesc.Count = 1;
+		depthStencilDesc.SampleDesc.Quality = 0;
+	}
+	depthStencilDesc.Format = DXGI_FORMAT_D32_FLOAT;// DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilDesc.CPUAccessFlags = 0;

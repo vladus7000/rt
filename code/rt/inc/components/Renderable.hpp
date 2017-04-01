@@ -15,9 +15,11 @@ namespace rt
 		XMMATRIX viewMatrix;
 		XMMATRIX viewProjectionMatrix;
 		XMMATRIX projectionMatrix;
+		XMMATRIX lightMatrix;
 		XMMATRIX worldMatrix;
 
 		void clear();
+		bool depthOnly;
 	};
 
 	class Renderable : public Component

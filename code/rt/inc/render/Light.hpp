@@ -22,7 +22,9 @@ namespace rt
 		bool isCastShadow() { return m_castShadow; }
 
 		const Camera& getCamera() const { return m_camera; }
+		Camera& getCamera() { return m_camera; }
 		ID3D11DepthStencilView* getDepth() { return m_dx11DepthStencilView; }
+		ID3D11ShaderResourceView* getDepthSRV() { return m_depthSRV; }
 
 	private:
 		~Light();
@@ -30,5 +32,6 @@ namespace rt
 		bool m_castShadow;
 		Camera m_camera;
 		ID3D11DepthStencilView* m_dx11DepthStencilView;
+		ID3D11ShaderResourceView* m_depthSRV;
 	};
 }

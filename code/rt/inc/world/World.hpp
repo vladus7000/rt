@@ -46,7 +46,7 @@ namespace rt
 			Camera& getMainCamera() { return m_camera; }
 
 		private:
-			void initCamera(tinyxml2::XMLNode* node, float aspectRatio);
+			void readCamera(tinyxml2::XMLNode* node, Camera* camera, float aspectRatio);
 			void parseObjects(tinyxml2::XMLNode* node, object::Object* root);
 			void parseComponents(tinyxml2::XMLNode* node, object::Object* object);
 			void parseTransformComponent(tinyxml2::XMLNode* node, object::Object* object);

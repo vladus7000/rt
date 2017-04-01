@@ -113,7 +113,14 @@ void Renderable::draw(RenderableContext* context)
 	dxContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
 
 	ID3DX11EffectTechnique* tech;
-	tech = m_dxEffect->GetTechniqueByName("ColorTech");
+	if (!context->depthOnly)
+	{
+		tech = m_dxEffect->GetTechniqueByName("ColorTech");
+	}
+	else
+	{
+		tech = m_dxEffect->GetTechniqueByName("DepthOnly");
+	}
 	D3DX11_TECHNIQUE_DESC desc;
 	tech->GetDesc(&desc);
 
@@ -150,6 +157,7 @@ void RenderableContext::clear()
 	viewProjectionMatrix = XMMatrixIdentity();
 	projectionMatrix = XMMatrixIdentity();
 	worldMatrix = XMMatrixIdentity();
+	depthOnly = false;
 }
 
 }

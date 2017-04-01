@@ -1,9 +1,10 @@
 #include "globals.inl"
 #include "gbuffer.inl"
 
-Texture2DMS<float4,4> diffuse_tu : register(t0);
-Texture2DMS<float4,4> normal_tv : register(t1);
-Texture2DMS<float4,4> aux : register(t2);
+Texture2D diffuse_tu : register(t0);
+Texture2D normal_tv : register(t1);
+Texture2D aux : register(t2);
+Texture2D depth : register(t3);
 
 struct Vertex
 {
@@ -27,16 +28,33 @@ VertexOut VS(Vertex inVertex)
 
 float4 PS(VertexOut inVertex) : SV_Target
 {
-	//inVertex.tcoord * int2(1200, 600)
-	int2 n2TexCoord;
-	n2TexCoord.x = (int)(inVertex.tcoord.x * 1200);
-	n2TexCoord.y = (int)(inVertex.tcoord.y * 600);
-	return (float4(diffuse_tu.Load(int3(n2TexCoord, 0), 0).xyz, 1.0) + float4(diffuse_tu.Load(int3(n2TexCoord, 0), 1).xyz, 1.0) + float4(diffuse_tu.Load(int3(n2TexCoord, 0), 2).xyz, 1.0) + float4(diffuse_tu.Load(int3(n2TexCoord, 0), 3).xyz, 1.0)) * 0.25;
+	float4 posW = aux.Sample(TextureSampler, inVertex.tcoord);
+	float4 posH = mul(posW, lightMatrix);
+	
+	float2 shadowCoord;
+	posH.xyz /= posH.w;
+	shadowCoord.x = posH.x / 2.0f + 0.5f;
+	shadowCoord.y = -posH.y / 2.0f + 0.5f;
+
+	float depthInShadow = depth.Sample(TextureSampler, shadowCoord).x;
+	float bias = 0.001;
+
+	if ((posH.z - bias) > depthInShadow && (saturate(shadowCoord.x) == shadowCoord.x) && (saturate(shadowCoord.y) == shadowCoord.y))
+	{
+		//in shadow
+		return float4(diffuse_tu.Sample(TextureSampler, inVertex.tcoord).xyz/2, 1.0);
+	}
+	else
+	{
+		return float4(diffuse_tu.Sample(TextureSampler, inVertex.tcoord).xyz, 1.0);
+	}
 }
+
 RasterizerState EnableMultisampling
 {
 	MultisampleEnable = TRUE;
 };
+
 technique11 Lighting
 {
 	pass P0

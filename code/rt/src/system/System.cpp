@@ -38,7 +38,7 @@ namespace
 	static const uint32 DefaultWidth = 800;
 	static const uint32 DefaultHeight = 600;
 	static const uint32 DefaultRefreshRate = 60;
-	static const uint32 DefaultMSAAQualityCount = 4;
+	static const uint32 DefaultMSAAQualityCount = 1;
 	static const uint32 DefaultMSAAQuality = 0;
 	static const char* DefaultWindowName = "RenderTest";
 

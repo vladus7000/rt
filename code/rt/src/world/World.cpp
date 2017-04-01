@@ -22,7 +22,7 @@ World::~World()
 {
 
 }
-
+float g_ar = 0.0f;
 bool World::init(system::ConfigRef config)
 {
 	fs::FileDescriptor::Ref configFile = fs::FileManager::LoadFileSync(config->sceneFile);
@@ -38,7 +38,8 @@ bool World::init(system::ConfigRef config)
 			{
 				if (tinyxml2::XMLNode* cameraNode = root->FirstChildElement("camera"))
 				{
-					initCamera(cameraNode, static_cast<float32>(config->windowSizeX) / static_cast<float32>(config->windowSizeY));
+					g_ar = static_cast<float32>(config->windowSizeX) / static_cast<float32>(config->windowSizeY);
+					readCamera(cameraNode, &m_camera, g_ar);
 				}
 
 				if (tinyxml2::XMLNode* scene = root->FirstChildElement("objects"))
@@ -136,7 +137,7 @@ void World::cleanVisibleItems()
 	m_visibleItems.lights.clear();
 }
 
-void World::initCamera(tinyxml2::XMLNode* node, float aspectRatio)
+void World::readCamera(tinyxml2::XMLNode* node, Camera* camera, float aspectRatio)
 {
 	float32 px = 0.0f;
 	float32 py = 0.0f;
@@ -181,17 +182,28 @@ void World::initCamera(tinyxml2::XMLNode* node, float aspectRatio)
 		perspective->QueryFloatAttribute("near", &nearZ);
 		perspective->QueryFloatAttribute("far", &farZ);
 	}
-	m_camera.buildProjectionMatrix(aspectRatio, fov, nearZ, farZ, XMVectorSet(px, py, pz, 1.0f), XMVectorSet(ux, uy, uz, 0.0f), XMVectorSet(tx, ty, tz, 0.0f));
+	camera->buildProjectionMatrix(aspectRatio, fov, nearZ, farZ, XMVectorSet(px, py, pz, 1.0f), XMVectorSet(ux, uy, uz, 0.0f), XMVectorSet(tx, ty, tz, 0.0f));
 }
 
 void World::parseObjects(tinyxml2::XMLNode* child, object::Object* root)
 {
 	for (child; child; child = child->NextSibling())
 	{
-		void* mem = system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
-		object::Object *object = new (mem) object::Object();
-
 		const char* name = child->ToElement()->Attribute("name");
+		const char* type = child->ToElement()->Attribute("type");
+
+		object::Object *object = nullptr;
+		if (type == nullptr)
+		{
+			void* mem = system::System::allocAllignement(sizeof(object::Object), 16); // TODO: improve
+			object = new (mem) object::Object();
+		}
+		else
+		{
+			void* mem = system::System::allocAllignement(sizeof(Light), 16); // TODO: improve
+			object = new (mem) Light();
+			static_cast<Light*>(object)->setCastShadow(true);
+		}
 		object->setName(name);
 
 		//parse components
@@ -231,6 +243,10 @@ void World::parseComponents(tinyxml2::XMLNode* node, object::Object* object)
 			else if (!strcmp(name, "terrain"))
 			{
 				parseTerrain(node, object);
+			}
+			else if (!strcmp(name, "camera"))
+			{
+				readCamera(node, &((Light*)object)->getCamera(), g_ar);
 			}
 		}
 	}

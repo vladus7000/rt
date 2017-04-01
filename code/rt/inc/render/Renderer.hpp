@@ -32,7 +32,7 @@ namespace rt
 
 			void bindGbuffer();
 			void clearGbuffer();
-			void shadeGBuffer();
+			void shadeGBuffer(world::VisibleItems& items);
 			void initLightShader();
 
 			void bindScreenRenderTarget();
