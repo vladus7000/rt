@@ -11,6 +11,7 @@ namespace
 
 Camera::Camera()
 	: m_cameraUID(g_cameraUIDS++)
+	, m_name("DummyCamera")
 {
 
 }
@@ -24,6 +25,11 @@ void Camera::buildProjectionMatrix(float aspect, float fov, float nearZ, float f
 {
 	m_view = XMMatrixLookAtLH(position, target, up);
 	m_projection = XMMatrixPerspectiveFovLH(fov, aspect, nearZ, farZ);
+	m_viewProjection = m_view * m_projection;
+}
+
+void Camera::recalculate()
+{
 	m_viewProjection = m_view * m_projection;
 }
 

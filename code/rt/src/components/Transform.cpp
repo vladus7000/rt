@@ -7,6 +7,7 @@ namespace rt
 Transform::Transform()
 {
 	m_transform = XMMatrixIdentity();
+	m_BaseTransform = XMMatrixIdentity();
 	m_position = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 	m_scale = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
 	m_rotation = XMQuaternionIdentity();
@@ -22,8 +23,7 @@ void Transform::update(float dt)
 	m2 = XMMatrixRotationQuaternion(m_rotation);
 	m1 = XMMatrixScalingFromVector(m_scale);
 
-	m_transform = m1 * m2 * m3;
-
+	m_transform = m_BaseTransform * m1 * m2 * m3;
 }
 
 void Transform::setPosition(const XMVECTOR & position)

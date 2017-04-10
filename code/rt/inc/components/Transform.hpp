@@ -23,7 +23,7 @@ namespace rt
 		
 		const XMMATRIX& getWorldTransform(object::Object* child);
 
-		void setTransform(const XMMATRIX& transform) { m_transform = transform; }
+		void setBaseTransform(const XMMATRIX& transform) { m_BaseTransform = transform; }
 
 		void setPosition(const XMVECTOR& position);
 		void setRotation(const XMVECTOR& rotation);
@@ -44,6 +44,7 @@ namespace rt
 		XMVECTOR m_rotation;
 		XMVECTOR m_scale;
 		XMMATRIX m_transform;
+		XMMATRIX m_BaseTransform;
 		XMMATRIX m_WorldTransform;
 	};
 }

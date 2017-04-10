@@ -11,6 +11,9 @@ namespace tinyxml2
 	class XMLNode;
 }
 
+struct aiNode;
+struct aiScene;
+
 namespace rt
 {
 	namespace world
@@ -53,6 +56,8 @@ namespace rt
 			void parseGraphicsComponent(tinyxml2::XMLNode* node, object::Object* object);
 			void parseTerrain(tinyxml2::XMLNode* node, object::Object* object);
 			void gatherVisibleObjects(VisibleItems& container, object::Object* root);
+			void traverseNodes(aiNode& root, const aiScene* scene);
+
 		private:
 			Objects m_objects;
 			VisibleItems m_visibleItems;

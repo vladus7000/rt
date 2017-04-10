@@ -19,7 +19,7 @@ struct SimpleVertexFormat
 Renderable::Renderable()
 {
 	m_inited = true;
-
+/*	m_indexCount = TEAPOT_NUM_INDICES;
 	D3D11_BUFFER_DESC vbDesc;
 	vbDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	vbDesc.ByteWidth = TEAPOT_NUM_VERTS * sizeof(SimpleVertexFormat);
@@ -64,6 +64,8 @@ Renderable::Renderable()
 	initData2.pSysMem = teapot_indices;
 
 	device->CreateBuffer(&ibDesc, &initData2, &m_indexBuffer);
+	*/
+	auto device = Resources::getInstance().getDxDevice();
 
 	D3D11_INPUT_ELEMENT_DESC simpleDescr[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -93,6 +95,11 @@ Renderable::~Renderable()
 {
 	ReleaseCOM(m_vertexBuffer);
 	ReleaseCOM(m_indexBuffer);
+
+	ReleaseCOM(m_TCoordBuffer);
+	ReleaseCOM(m_NormalBuffer);
+	ReleaseCOM(m_ColorBuffer );
+
 	ReleaseCOM(m_dxEffect);
 	ReleaseCOM(m_vertexInputLayout);
 	ReleaseCOM(m_shaderRV);
@@ -147,8 +154,45 @@ void Renderable::draw(RenderableContext* context)
 	{
 		dxContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		tech->GetPassByIndex(i)->Apply(0, dxContext);
-		dxContext->DrawIndexed(TEAPOT_NUM_INDICES, 0, 0);
+		dxContext->DrawIndexed(m_indexCount, 0, 0);
 	}
+}
+
+void Renderable::overrideBuffers(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, int32 indexCount)
+{
+	ReleaseCOM(m_vertexBuffer);
+	ReleaseCOM(m_indexBuffer);
+	m_vertexBuffer = vertexBuffer;
+	m_indexBuffer = indexBuffer;
+	m_indexCount = indexCount;
+}
+
+void Renderable::overrideVertexBuffer(ID3D11Buffer * buffer, int32 count)
+{
+}
+
+void Renderable::overrideNormalBuffer(ID3D11Buffer * buffer, int32 count)
+{
+}
+
+void Renderable::overrideTCoordBuffer(ID3D11Buffer * buffer, int32 count)
+{
+}
+
+void Renderable::overrideColorBuffer(ID3D11Buffer * buffer, int32 count)
+{
+}
+
+void Renderable::overrideTangentBuffer(ID3D11Buffer * buffer, int32 count)
+{
+}
+
+void Renderable::overrideBitangentBuffer(ID3D11Buffer * buffer, int32 count)
+{
+}
+
+void Renderable::overrideIndexBuffer(ID3D11Buffer * buffer, int32 count)
+{
 }
 
 void RenderableContext::clear()
