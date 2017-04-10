@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B3EA666E-9BF5-44A2-AA07-3BF993B73198}</ProjectGuid>
+    <RootNamespace>RT_Lib</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\code\3paty\;..\code\rt\inc;..\code\rt\inc\system\;..\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;..\3paty\Assimp\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>d3d11.lib;d3dx11.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;Effects11.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)\Lib\x86;..\3paty\Effects11\x86\Debug;..\3paty\Assimp\lib\x86\</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.\code\3paty\;.\code\rt\inc;.\code\rt\inc\system\;.\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;.\3paty\Assimp\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>d3d11.lib;d3dx11.lib;D3DCompiler.lib;dxerr.lib;dxgi.lib;dxguid.lib;Effects11.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\code\3paty\;..\code\rt\inc;..\code\rt\inc\system\;..\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;..\3paty\Assimp\include\</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)\Lib\x86;..\3paty\Effects11\x86\Debug;..\3paty\Assimp\lib\x86\</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.\code\3paty\;.\code\rt\inc;.\code\rt\inc\system\;.\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;.\3paty\Assimp\include\</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\code\3paty\tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="..\code\game\src\main.cpp" />
+    <ClCompile Include="..\code\game\src\TeapotObject.cpp" />
+    <ClCompile Include="..\code\rt\src\components\Components.cpp" />
+    <ClCompile Include="..\code\rt\src\components\Renderable.cpp" />
+    <ClCompile Include="..\code\rt\src\components\Transform.cpp" />
+    <ClCompile Include="..\code\rt\src\render\Camera.cpp" />
+    <ClCompile Include="..\code\rt\src\render\Light.cpp" />
+    <ClCompile Include="..\code\rt\src\render\MeshContainer.cpp" />
+    <ClCompile Include="..\code\rt\src\render\Renderer.cpp" />
+    <ClCompile Include="..\code\rt\src\system\FileManager.cpp" />
+    <ClCompile Include="..\code\rt\src\system\Object.cpp" />
+    <ClCompile Include="..\code\rt\src\system\Resources.cpp" />
+    <ClCompile Include="..\code\rt\src\system\stdafx.cpp" />
+    <ClCompile Include="..\code\rt\src\system\System.cpp" />
+    <ClCompile Include="..\code\rt\src\world\Terrain.cpp" />
+    <ClCompile Include="..\code\rt\src\world\World.cpp" />
+    <ClCompile Include="RTProxy.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\code\3paty\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="..\code\game\inc\teapot.h" />
+    <ClInclude Include="..\code\game\inc\TeapotObject.hpp" />
+    <ClInclude Include="..\code\rt\inc\components\Components.hpp" />
+    <ClInclude Include="..\code\rt\inc\components\Renderable.hpp" />
+    <ClInclude Include="..\code\rt\inc\components\Transform.hpp" />
+    <ClInclude Include="..\code\rt\inc\render\Camera.hpp" />
+    <ClInclude Include="..\code\rt\inc\render\dxUtils.hpp" />
+    <ClInclude Include="..\code\rt\inc\render\Light.hpp" />
+    <ClInclude Include="..\code\rt\inc\render\MeshContainer.hpp" />
+    <ClInclude Include="..\code\rt\inc\render\Renderer.hpp" />
+    <ClInclude Include="..\code\rt\inc\system\Assertions.hpp" />
+    <ClInclude Include="..\code\rt\inc\system\FileManager.hpp" />
+    <ClInclude Include="..\code\rt\inc\system\Object.hpp" />
+    <ClInclude Include="..\code\rt\inc\system\RefCounted.hpp" />
+    <ClInclude Include="..\code\rt\inc\system\Resources.h" />
+    <ClInclude Include="..\code\rt\inc\system\stdafx.h" />
+    <ClInclude Include="..\code\rt\inc\system\System.hpp" />
+    <ClInclude Include="..\code\rt\inc\system\Types.hpp" />
+    <ClInclude Include="..\code\rt\inc\utils\BBOX.hpp" />
+    <ClInclude Include="..\code\rt\inc\world\Terrain.hpp" />
+    <ClInclude Include="..\code\rt\inc\world\World.hpp" />
+    <ClInclude Include="RTProxy.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

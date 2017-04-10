@@ -110,38 +110,45 @@ System::~System()
 {
 }
 
-bool System::init()
+bool System::init(HWND hwnd)
 {
 	std::wstring windowsName(m_config->windowsName.begin(), m_config->windowsName.end());
 
-	TCHAR szAppName[] = TEXT("System");
-	WNDCLASS wndclass;
+	if (hwnd == nullptr)
+	{
+		TCHAR szAppName[] = TEXT("System");
+		WNDCLASS wndclass;
 
-	HINSTANCE instance = GetModuleHandle(NULL);
+		HINSTANCE instance = GetModuleHandle(NULL);
 
-	wndclass.style = CS_HREDRAW | CS_VREDRAW;
-	wndclass.lpfnWndProc = WndProc;
-	wndclass.cbClsExtra = 0;
-	wndclass.cbWndExtra = 0;
-	wndclass.hInstance = instance;
-	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wndclass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wndclass.lpszMenuName = NULL;
-	wndclass.lpszClassName = szAppName;
+		wndclass.style = CS_HREDRAW | CS_VREDRAW;
+		wndclass.lpfnWndProc = WndProc;
+		wndclass.cbClsExtra = 0;
+		wndclass.cbWndExtra = 0;
+		wndclass.hInstance = instance;
+		wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+		wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+		wndclass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+		wndclass.lpszMenuName = NULL;
+		wndclass.lpszClassName = szAppName;
 
-	RegisterClass(&wndclass);
+		RegisterClass(&wndclass);
 
-	m_config->hwnd = CreateWindow(szAppName, windowsName.c_str(),
-		WS_OVERLAPPEDWINDOW,
-		0, 0,
-		m_config->windowSizeX, m_config->windowSizeY,
-		NULL, NULL, instance, NULL);
+		m_config->hwnd = CreateWindow(szAppName, windowsName.c_str(),
+			WS_OVERLAPPEDWINDOW,
+			0, 0,
+			m_config->windowSizeX, m_config->windowSizeY,
+			NULL, NULL, instance, NULL);
+
+		ShowWindow(m_config->hwnd, SW_SHOW);
+		UpdateWindow(m_config->hwnd);
+	}
+	else
+	{
+		m_config->hwnd = hwnd;
+	}
 
 	m_running = m_config->hwnd != nullptr;
-
-	ShowWindow(m_config->hwnd, SW_SHOW);
-	UpdateWindow(m_config->hwnd);
 
 	return m_running;
 }

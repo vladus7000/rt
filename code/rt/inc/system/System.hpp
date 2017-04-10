@@ -44,7 +44,7 @@ namespace rt
 			System(ConfigRef newConfig);
 			~System();
 
-			bool init();
+			bool init(HWND hwnd = nullptr);
 			void deinit();
 			bool update(float32 delta);
 
