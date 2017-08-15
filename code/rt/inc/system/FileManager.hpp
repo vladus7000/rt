@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <memory>
 
 #include "System.hpp"
@@ -38,18 +39,23 @@ namespace rt
 		class FileManager
 		{
 		public:
-			FileManager();
-			~FileManager();
-
 			bool init();
 			void deinit();
 
-			static const std::string& getRoot() { return m_root; }
-			static void setRoot(const std::string& root) { m_root = root; }
+			static FileManager& getInstance();
 
-			static FileDescriptor::Ref LoadFileSync(const std::string& fileName);
+			const std::string& getRoot() { return m_root; }
+			void setRoot(const std::string& root) { m_root = root; }
+
+			FileDescriptor::Ref loadFileSync(const std::string& fileName, bool isRelativeToRoot = true);
+			std::vector<std::string> getListOfFiles(const std::string& root, bool isRelativeToRoot = true);
+
 		private:
-			static std::string m_root;
+			FileManager();
+			~FileManager();
+			FileManager& operator=(const FileManager& rhs);
+			FileManager(const FileManager& rhs);
+			std::string m_root;
 		};
 	} // fs
 } // rt

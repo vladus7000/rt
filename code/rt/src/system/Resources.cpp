@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "system/Resources.h"
 #include "render/dxUtils.hpp"
+#include <filesystem>
+#include <iostream>
+
+#include "tinyxml2/tinyxml2.h"
 
 namespace rt
 {
@@ -73,6 +77,9 @@ bool Resources::init(system::ConfigRef config)
 	ReleaseCOM(dxgiFactory);
 	ReleaseCOM(dxgiAdaptor);
 	ReleaseCOM(dxgiDevice);
+
+	loadMaterials("materials");
+
 	return true;
 }
 
@@ -81,6 +88,11 @@ void Resources::deinit()
 	ReleaseCOM(m_dx11swapChain);
 	ReleaseCOM(m_dx11Context);
 	ReleaseCOM(m_dx11Device);
+	for (auto& material : m_materials)
+	{
+		material->release();
+	}
+	m_materials.clear();
 }
 
 unsigned int Resources::checkMultisampleQuality(DXGI_FORMAT format, uint32 samplesCount)
@@ -90,7 +102,7 @@ unsigned int Resources::checkMultisampleQuality(DXGI_FORMAT format, uint32 sampl
 	return quality;
 }
 
-ID3D11DepthStencilView * Resources::createDepthBuffer()
+ID3D11DepthStencilView* Resources::createDepthBuffer()
 {
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	depthStencilDesc.Width = m_config->windowSizeX;;
@@ -121,6 +133,132 @@ ID3D11DepthStencilView * Resources::createDepthBuffer()
 	m_dx11Device->CreateDepthStencilView(depthTexture, 0, &depthView);
 	ReleaseCOM(depthTexture);
 	return depthView;
+}
+
+void Resources::loadMaterials(const std::string& path)
+{
+	auto files = rt::fs::FileManager::getInstance().getListOfFiles(path, true);
+	for (auto& file : files)
+	{
+		Material* m = new Material();
+
+		fs::FileDescriptor::Ref matrialFile = fs::FileManager::getInstance().loadFileSync(file, false);
+
+		if (matrialFile->valid)
+		{
+			tinyxml2::XMLDocument xmlDoc;
+			tinyxml2::XMLError eResult = xmlDoc.Parse(reinterpret_cast<const char*>(matrialFile->data), matrialFile->fileSize);
+
+			if (eResult == tinyxml2::XMLError::XML_SUCCESS)
+			{
+				if (tinyxml2::XMLNode* root = xmlDoc.RootElement())
+				{
+					const char* name = root->ToElement()->Attribute("name");
+					m->setName(name);
+					m->setFileName(file);
+					if (tinyxml2::XMLNode* textures = root->FirstChildElement("Textures"))
+					{
+						if (tinyxml2::XMLNode* albedo = textures->FirstChildElement("albedo"))
+						{
+							const char* name = albedo->ToElement()->Attribute("file");
+							m->setTexture(Material::TextureLayers::albedo, name);
+						}
+						if (tinyxml2::XMLNode* glosiness = textures->FirstChildElement("glosiness"))
+						{
+							const char* name = glosiness->ToElement()->Attribute("file");
+							m->setTexture(Material::TextureLayers::glosiness, name);
+						}
+						if (tinyxml2::XMLNode* normal = textures->FirstChildElement("normal"))
+						{
+							const char* name = normal->ToElement()->Attribute("file");
+							m->setTexture(Material::TextureLayers::normal, name);
+						}
+					}
+
+					if (tinyxml2::XMLNode* shader = root->FirstChildElement("Shader"))
+					{
+						const char* effectFile = shader->ToElement()->Attribute("EffectFile");
+						m->setEffectFile(effectFile);
+						if (tinyxml2::XMLNode* programs = shader->FirstChildElement("programs"))
+						{
+							if (const char* VS = programs->ToElement()->Attribute("VS"))
+							{
+								m->setShader(Material::Shader::VS, VS);
+							}
+							if (const char* PS = programs->ToElement()->Attribute("PS"))
+							{
+								m->setShader(Material::Shader::PS, PS);
+							}
+							if (const char* GS = programs->ToElement()->Attribute("GS"))
+							{
+								m->setShader(Material::Shader::GS, GS);
+							}
+
+						}
+					}
+				}
+			}
+		}
+		m_materials.emplace_back(m);
+	}
+}
+
+const char* Resources::getMaterialsName(int i)
+{
+	return m_materials[i]->getName().c_str();
+}
+
+const Material* Resources::getMaterialByName(const char* name) const
+{
+	Material* ret = nullptr;
+	for (int i = 0; i < m_materials.size(); ++i)
+	{
+		if (m_materials[i]->getName() == name)
+		{
+			ret = m_materials[i];
+		}
+	}
+	return ret;
+}
+
+bool Resources::updateMaterial(Material* m)
+{
+	bool ret = false;
+	auto it = std::find_if(m_materials.begin(), m_materials.end(), [=](Material* cmp)
+	{
+		return cmp->getName() == m->getName();
+	});
+
+	if (it == m_materials.end())
+	{
+		m_materials.push_back(m);
+		m->acquire();
+		ret = true;
+	}
+	else
+	{
+		(*it)->updateFrom(m);
+	}
+
+	return ret;
+}
+
+void Resources::removeMaterial(Material* m)
+{
+	auto it = std::find_if(m_materials.begin(), m_materials.end(), [=](Material* cmp)
+	{
+		return cmp->getName() == m->getName();
+	});
+
+	if (it != m_materials.end())
+	{
+		m_materials.erase(it);
+	}
+}
+
+int Resources::getMaterialsCount()
+{
+	return m_materials.size();
 }
 
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "components/Renderable.hpp"
+#include "render/Material.hpp"
 
 namespace rt
 {
@@ -22,5 +23,6 @@ namespace rt
 		ID3DX11Effect* m_dxEffect;
 		ID3D11InputLayout* m_inputLayout;
 		uint32 m_indicesCount;
+		const Material* m_terrainMaterial;
 	};
 }

@@ -67,14 +67,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 System::System()
 	: m_config(std::make_shared<Config>())
 {
-	fs::FileDescriptor::Ref configFile = fs::FileManager::LoadFileSync(SettingsFile);
-	
 	m_config->windowSizeX = DefaultWidth;
 	m_config->windowSizeY = DefaultHeight;
 	m_config->windowsName = DefaultWindowName;
 	m_config->fixedFrameRate = DefaultRefreshRate;
 	m_config->msaaQualityCount = DefaultMSAAQualityCount;
 	m_config->msaaQuality = DefaultMSAAQuality;
+}
+
+System::System(ConfigRef newConfig)
+	: m_config(newConfig)
+{
+}
+
+System::~System()
+{
+}
+
+bool System::init(HWND hwnd)
+{
+	fs::FileDescriptor::Ref configFile = rt::fs::FileManager::getInstance().loadFileSync(SettingsFile);
+	std::wstring windowsName(m_config->windowsName.begin(), m_config->windowsName.end());
 
 	if (configFile->valid)
 	{
@@ -99,20 +112,6 @@ System::System()
 			}
 		}
 	}
-}
-
-System::System(ConfigRef newConfig)
-	: m_config(newConfig)
-{
-}
-
-System::~System()
-{
-}
-
-bool System::init(HWND hwnd)
-{
-	std::wstring windowsName(m_config->windowsName.begin(), m_config->windowsName.end());
 
 	if (hwnd == nullptr)
 	{

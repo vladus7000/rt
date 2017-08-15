@@ -132,6 +132,7 @@
     <ClCompile Include="..\code\rt\src\components\Transform.cpp" />
     <ClCompile Include="..\code\rt\src\render\Camera.cpp" />
     <ClCompile Include="..\code\rt\src\render\Light.cpp" />
+    <ClCompile Include="..\code\rt\src\render\Material.cpp" />
     <ClCompile Include="..\code\rt\src\render\MeshContainer.cpp" />
     <ClCompile Include="..\code\rt\src\render\Renderer.cpp" />
     <ClCompile Include="..\code\rt\src\system\FileManager.cpp" />

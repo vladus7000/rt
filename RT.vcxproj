@@ -28,6 +28,7 @@
     <ClCompile Include="code\game\src\main.cpp" />
     <ClCompile Include="code\game\src\TeapotObject.cpp" />
     <ClCompile Include="code\rt\src\render\Light.cpp" />
+    <ClCompile Include="code\rt\src\render\Material.cpp" />
     <ClCompile Include="code\rt\src\system\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -61,6 +62,7 @@
     <ClInclude Include="code\rt\inc\render\Camera.hpp" />
     <ClInclude Include="code\rt\inc\render\dxUtils.hpp" />
     <ClInclude Include="code\rt\inc\render\Light.hpp" />
+    <ClInclude Include="code\rt\inc\render\Material.hpp" />
     <ClInclude Include="code\rt\inc\render\MeshContainer.hpp" />
     <ClInclude Include="code\rt\inc\render\Renderer.hpp" />
     <ClInclude Include="code\rt\inc\system\Assertions.hpp" />

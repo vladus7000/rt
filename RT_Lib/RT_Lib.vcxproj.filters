@@ -69,6 +69,9 @@
     <ClCompile Include="RTProxy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\code\rt\src\render\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\code\3paty\tinyxml2\tinyxml2.h">

@@ -89,7 +89,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Vlad\Documents\Visual Studio 2015\Projects\rt\RT_Lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Vlad\Documents\Visual Studio 2015\Projects\rt\code\rt\inc\system;..\code\3paty\;..\code\rt\inc;..\code\rt\inc\system\;..\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;.\3paty\Assimp\include\;C:\Users\Vlad\Documents\Visual Studio 2015\Projects\rt\RT_Lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>RT_Lib.lib</AdditionalDependencies>
@@ -101,6 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\code\3paty\;..\code\rt\inc;..\code\rt\inc\system\;..\code\game\inc;$(DXSDK_DIR)\Include;$(DXSDK_DIR)\Samples\C++\Effects11\Inc;.\3paty\Assimp\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies />
@@ -135,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EditorMain.cpp" />
+    <ClCompile Include="EditorWrap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EditorMain.h">

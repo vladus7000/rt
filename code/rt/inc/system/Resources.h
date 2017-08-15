@@ -4,6 +4,9 @@
 #include <D3Dcompiler.h>
 
 #include "System.hpp"
+#include <vector>
+#include <string>
+#include <render/Material.hpp>
 
 namespace rt
 {
@@ -20,6 +23,13 @@ namespace rt
 		IDXGISwapChain* getSwapChain() { return m_dx11swapChain; }
 		uint32 checkMultisampleQuality(DXGI_FORMAT format, uint32 samplesCount);
 		ID3D11DepthStencilView* createDepthBuffer();
+		void loadMaterials(const std::string& path);
+		const char* getMaterialsName(int i);
+		const Material* getMaterialByName(const char* name) const;
+		bool updateMaterial(Material* m);
+		void removeMaterial(Material* m);
+		int getMaterialsCount();
+
 	private:
 		Resources();
 		~Resources();
@@ -29,5 +39,6 @@ namespace rt
 		ID3D11Device* m_dx11Device = nullptr;
 		ID3D11DeviceContext* m_dx11Context = nullptr;
 		system::ConfigRef m_config;
+		std::vector<Material*> m_materials;
 	};
 }

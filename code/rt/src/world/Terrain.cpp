@@ -14,6 +14,7 @@ Terrain::Terrain()
 	, m_dxEffect(nullptr)
 	, m_inputLayout(nullptr)
 	, m_indicesCount(0)
+	, m_terrainMaterial(rt::Resources::getInstance().getMaterialByName("TerrainMaterial"))
 {
 	initGrid(20.0f, 10.0f, 100, 50);
 	initShader();
@@ -163,7 +164,8 @@ void Terrain::initShader()
 	auto& resources = Resources::getInstance();
 	auto device = resources.getDxDevice();
 
-	D3DX11CompileFromFile(L"data/shaders/terrain.fx", nullptr, 0, 0, "fx_5_0", flags, 0, nullptr, &compiledShader, &compilerMsg, nullptr);
+	std::wstring name(m_terrainMaterial->getEffectFile().begin(), m_terrainMaterial->getEffectFile().end());
+	D3DX11CompileFromFile(name.c_str(), nullptr, 0, 0, "fx_5_0", flags, 0, nullptr, &compiledShader, &compilerMsg, nullptr);
 	
 	if (compilerMsg)
 	{

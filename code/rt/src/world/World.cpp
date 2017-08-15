@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "world/World.hpp"
 #include "tinyxml2/tinyxml2.h"
-#include "system/FileManager.hpp"
 
 #include "components/Renderable.hpp"
 #include "components/Transform.hpp"
@@ -43,7 +42,7 @@ namespace
 
 bool World::init(system::ConfigRef config)
 {
-	fs::FileDescriptor::Ref configFile = fs::FileManager::LoadFileSync(config->sceneFile);
+	fs::FileDescriptor::Ref configFile = fs::FileManager::getInstance().loadFileSync(config->sceneFile);
 	g_ar = static_cast<float32>(config->windowSizeX) / static_cast<float32>(config->windowSizeY);
 
 	if (configFile->valid)
